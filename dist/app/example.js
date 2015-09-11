@@ -35,7 +35,13 @@ angular
   .module('example')
   .controller('calendarController', function($scope, supersonic) {
 
+      $scope.events = (localStorage.getItem('events') === null) ? [] : JSON.parse(localStorage.getItem('events'));
+
       $scope.confirm_event = function(){
+          if (typeof $scope.eventname == 'undefined' || typeof $scope.from == 'undefined'){
+              supersonic.ui.dialog.alert("Make sure to specify the event name or starting time. Event not saved.");
+              return;
+          }
 
           var eventObject = {
               eventname: $scope.eventname,
@@ -45,18 +51,9 @@ angular
               description: $scope.description
           };
 
-          //save the event locally for events page
-          var events = localStorage.getItem('events');
+          $scope.events.push(eventObject);
+          localStorage.setItem('events', JSON.stringify($scope.events));
 
-          if(events === null){
-              events = [];
-          }
-          else{
-              events = JSON.parse(events);
-          }
-
-          events.push(eventObject);
-          localStorage.setItem('events', JSON.stringify(events));
           supersonic.ui.dialog.alert("event saved and added to calendar");
       };
 

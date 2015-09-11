@@ -1,4 +1,4 @@
-<div class="padding">
+<div class="padding" ng-controller="calendarController">
 
   <super-navbar>
     <super-navbar-title> Events </super-navbar-title>
@@ -9,5 +9,26 @@
   </super-navbar>
 
   <h2>Added Events go here</h2>
+
+  <div class="card" data-ng-repeat="x in events">
+
+      <div class="item item-divider">
+          {{ x['eventname'] }}
+      </div>
+      <div class="item item-text-wrap">
+        {{ x['description'] }}
+      </div>
+      <div class="item item-text-wrap">
+        {{ x['location'] }}
+      </div>
+      <div class="item item-divider">
+          From: {{ x['from'] }}
+          Until: {{ x['until'] }}
+      </div>
+
+  </div>
+
+
+</div>
 
 </div>
