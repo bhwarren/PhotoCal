@@ -22,6 +22,6 @@ angular
         supersonic.ui.modal.show("example#confirm_modal");
     };
 
-    
+
 
   });

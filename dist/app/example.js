@@ -5,14 +5,6 @@ angular.module('example', [
 
 angular
   .module('example')
-  .controller('LearnMoreController', function($scope, supersonic) {
-
-    $scope.navbarTitle = "Learn More";
-
-  });
-
-angular
-  .module('example')
   .controller('PhotosController', function($scope, supersonic) {
 
     $scope.getCamera = function(){
@@ -35,14 +27,8 @@ angular
         supersonic.ui.modal.show("example#confirm_modal");
     };
 
-    
 
-  });
 
-angular
-  .module('example')
-  .controller('SettingsController', function($scope, supersonic) {
-    $scope.navbarTitle = "Settings";
   });
 
 angular
@@ -52,11 +38,27 @@ angular
 
       $scope.confirm_event = function(eventObject){
           //save the event locally for events page
-          var events = localStorage.getItem('events').parse();
-          if(!events){
-              events = {};
+          localStorage.clear();
+          supersonic.logger.error("after clearing item");
+          var events = localStorage.getItem('events');
+          supersonic.logger.error(JSON.stringify(events));
+
+          if(events === null){ 
+              events = [];
+              supersonic.logger.error("set events to empty arr");
+
           }
-          events.append(eventObject);
+          else{
+              supersonic.logger.error("before parse");
+              events = JSON.parse(events);
+              supersonic.logger.error("after parse");
+
+          }
+          supersonic.logger.error("before append");
+
+          events.push(eventObject);
+          supersonic.logger.error("before set events item 2nd");
+
           localStorage.setItem('events', JSON.stringify(events));
 
           //add the event to calendar
@@ -67,37 +69,16 @@ angular
           supersonic.ui.dialog.alert("cancelled");
       };
 
-    $scope.openCalendar = function(){
-        supersonic.ui.drawers.close();
-        supersonic.device.platform().then( function(platform) {
-             if(platform.name == "Android"){
-                 supersonic.ui.dialog.alert("need a plugin to open 4 android, sorry");
-             }
-             else{
-                 supersonic.app.openURL("calshow://");
-             }
-         });
+        $scope.openCalendar = function(){
+            supersonic.ui.drawers.close();
+            supersonic.device.platform().then( function(platform) {
+                 if(platform.name == "Android"){
+                     supersonic.ui.dialog.alert("need a plugin to open 4 android, sorry");
+                 }
+                 else{
+                     supersonic.app.openURL("calshow://");
+                 }
+             });
 
-    };
+        };
  });
-
-angular
-  .module('example')
-  .controller('confirmController', function($scope, supersonic) {
-    $scope.confirm_event = function(){
-        supersonic.ui.dialog.alert("added to calendar");
-    };
-    $scope.cancel_event = function(){
-        supersonic.ui.dialog.alert("cancelled");
-    };
-  });
-
-angular
-  .module('example')
-  .controller('sharedController', function($scope, supersonic) {
-
-      $scope.openMenu = function(){
-          supersonic.ui.drawers.open("right");
-      };
-
-  });

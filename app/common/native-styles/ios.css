@@ -45,3 +45,9 @@ tab-bar-item#index {
 tab-bar-item#internet {
   background-image: url(icons/search.svg);
 }
+
+navigation-bar button {
+    /*icon made by Freepik from www.flaticon.com*/
+    background-image: url(icons/menu.svg);
+    border-radius: 4px;
+}
