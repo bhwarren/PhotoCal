@@ -2,33 +2,28 @@ angular
   .module('example')
   .controller('calendarController', function($scope, supersonic) {
 
+      $scope.confirm_event = function(){
 
-      $scope.confirm_event = function(eventObject){
+          var eventObject = {
+              eventname: $scope.eventname,
+              location: $scope.location,
+              from: $scope.from,
+              until: $scope.until,
+              description: $scope.description
+          };
+
           //save the event locally for events page
-          localStorage.clear();
-          supersonic.logger.error("after clearing item");
           var events = localStorage.getItem('events');
-          supersonic.logger.error(JSON.stringify(events));
 
-          if(events === null){ 
+          if(events === null){
               events = [];
-              supersonic.logger.error("set events to empty arr");
-
           }
           else{
-              supersonic.logger.error("before parse");
               events = JSON.parse(events);
-              supersonic.logger.error("after parse");
-
           }
-          supersonic.logger.error("before append");
 
           events.push(eventObject);
-          supersonic.logger.error("before set events item 2nd");
-
           localStorage.setItem('events', JSON.stringify(events));
-
-          //add the event to calendar
           supersonic.ui.dialog.alert("event saved and added to calendar");
       };
 
