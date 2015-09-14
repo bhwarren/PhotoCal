@@ -6,22 +6,25 @@ angular
         var options = {
           quality: 50,
           allowEdit: false,
-          //targetWidth: 300,
-          //targetHeight: 300,
           encodingType: "png",
           saveToPhotoAlbum: true
         };
 
         supersonic.media.camera.takePicture(options).then( function(result){
             supersonic.ui.modal.show("example#confirm_modal");
-
         });
     };
 
     $scope.confirm = function(){
-        supersonic.ui.modal.show("example#confirm_modal");
+        var message = {
+            eventname: "Halloween Party",
+            location: "666 Elm Street",
+            from: "10pm",
+            until: "3am",
+            description: "a party so good, you'll dream about it"
+        };
+
+        supersonic.data.channel('newEvent').publish(message);
     };
-
-
 
   });

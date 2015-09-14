@@ -35,8 +35,10 @@
 
   <label class="item item-input item-stacked-label">
     <span class="input-label">Event Name:</span>
-    <input type="text" ng-model="eventname" placeholder="">
-  </label> 
+    <input type="text" ng-model="eventname" ><div ng-bind="eventname">
+    </div>
+    ffxx
+  </label>
 
   <label class="item item-input item-stacked-label">
     <span class="input-label">Location:</span>
@@ -44,12 +46,12 @@
   </label>
 
   <label class="item item-input item-stacked-label">
-    <span class="input-label">From:</span>
+    <span class="input-label">Start:</span>
     <input type="text" ng-model="from" placeholder="">
   </label>
 
   <label class="item item-input item-stacked-label">
-    <span class="input-label">Until:</span>
+    <span class="input-label">End:</span>
     <input type="text" ng-model="until" placeholder="">
   </label>
 

@@ -11,55 +11,82 @@ angular
         var options = {
           quality: 50,
           allowEdit: false,
-          //targetWidth: 300,
-          //targetHeight: 300,
           encodingType: "png",
           saveToPhotoAlbum: true
         };
 
         supersonic.media.camera.takePicture(options).then( function(result){
             supersonic.ui.modal.show("example#confirm_modal");
-
         });
     };
 
     $scope.confirm = function(){
-        supersonic.ui.modal.show("example#confirm_modal");
+        var message = {
+            eventname: "Halloween Party",
+            location: "666 Elm Street",
+            from: "10pm",
+            until: "3am",
+            description: "a party so good, you'll dream about it"
+        };
+
+        supersonic.data.channel('newEvent').publish(message);
     };
-
-
 
   });
 
 angular
-  .module('example')
-  .controller('calendarController', function($scope, supersonic) {
+    .module('example')
+    .controller('calendarController', function($scope, supersonic) {
+        $scope.eventname = "adsafdddddddd";
+        supersonic.bind($scope,"eventname");
 
-      $scope.events = (localStorage.getItem('events') === null) ? [] : JSON.parse(localStorage.getItem('events'));
+         function setConfirmVars(message) {
+             supersonic.logger.error("previously set to: "+$scope.eventname);
 
-      $scope.confirm_event = function(){
-          if (typeof $scope.eventname == 'undefined' || typeof $scope.from == 'undefined'){
-              supersonic.ui.dialog.alert("Make sure to specify the event name or starting time. Event not saved.");
-              return;
-          }
+            $scope.eventname = message.eventname;
+            $scope.from = message.from;
+            supersonic.logger.error("set successfully to: "+$scope.eventname);
+            supersonic.ui.modal.show("example#confirm_modal");
+            supersonic.logger.error("after showing modal");
 
-          var eventObject = {
-              eventname: $scope.eventname,
-              location: $scope.location,
-              from: $scope.from,
-              until: $scope.until,
-              description: $scope.description
-          };
+        }
+        supersonic.data.channel('newEvent').subscribe( setConfirmVars );
 
-          $scope.events.push(eventObject);
-          localStorage.setItem('events', JSON.stringify($scope.events));
+        $scope.events = (localStorage.getItem('events') === null) ? [] : JSON.parse(localStorage.getItem('events'));
 
-          supersonic.ui.dialog.alert("event saved and added to calendar");
-      };
+        $scope.removeEvent = function(removeObject){
+            var index = $scope.events.indexOf(removeObject);
+            if(index != -1){
+                $scope.events.splice(index,1);
+                localStorage.setItem('events', JSON.stringify($scope.events));
+            }
+        };
 
-      $scope.cancel_event = function(){
-          supersonic.ui.dialog.alert("cancelled");
-      };
+        $scope.confirm_event = function(){
+            if (typeof $scope.eventname == 'undefined' || typeof $scope.from == 'undefined'){
+                supersonic.ui.dialog.alert("Make sure to specify the event name or starting time. Event not saved.");
+                return;
+            }
+
+            var eventObject = {
+                eventname: $scope.eventname,
+                location: $scope.location,
+                from: $scope.from,
+                until: $scope.until,
+                description: $scope.description
+            };
+
+            $scope.events.push(eventObject);
+            localStorage.setItem('events', JSON.stringify($scope.events));
+
+            supersonic.ui.dialog.alert("event saved and added to calendar");
+        };
+
+        $scope.cancel_event = function(){
+            supersonic.logger.error("scope:"+$scope.eventname);
+
+            supersonic.ui.dialog.alert("cancelled");
+        };
 
         $scope.openCalendar = function(){
             supersonic.ui.drawers.close();
@@ -73,4 +100,5 @@ angular
              });
 
         };
+
  });

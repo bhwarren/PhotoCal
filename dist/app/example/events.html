@@ -41,28 +41,26 @@
 
   </super-navbar>
 
-  <h2>Added Events go here</h2>
-
-  <div class="card" data-ng-repeat="x in events">
-
+  <div class="card" data-ng-repeat="event in events">
       <div class="item item-divider">
-          {{ x['eventname'] }}
+          {{ event['eventname'] }}
+          <img id="cancel" src="/icons/cancel.png" alt="Cancel" ng-click="removeEvent(event)">
       </div>
       <div class="item item-text-wrap">
-        {{ x['description'] }}
+        {{ event['description'] }}
       </div>
       <div class="item item-text-wrap">
-        {{ x['location'] }}
+        {{ event['location'] }}
       </div>
       <div class="item item-divider">
-          From: {{ x['from'] }}
-          Until: {{ x['until'] }}
+          <div>
+              Start: {{ event['from'] }}
+          </div>
+          <div>
+              End: {{ event['until'] }}
+          </div>
       </div>
-
   </div>
-
-
-</div>
 
 </div>
 
