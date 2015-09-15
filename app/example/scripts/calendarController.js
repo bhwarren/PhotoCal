@@ -1,20 +1,8 @@
 angular
     .module('example')
     .controller('calendarController', function($scope, supersonic) {
-        $scope.eventname = "adsafdddddddd";
-        supersonic.bind($scope,"eventname");
 
-         function setConfirmVars(message) {
-             supersonic.logger.error("previously set to: "+$scope.eventname);
-
-            $scope.eventname = message.eventname;
-            $scope.from = message.from;
-            supersonic.logger.error("set successfully to: "+$scope.eventname);
-            supersonic.ui.modal.show("example#confirm_modal");
-            supersonic.logger.error("after showing modal");
-
-        }
-        supersonic.data.channel('newEvent').subscribe( setConfirmVars );
+        $scope.eventname = "calendarview";
 
         $scope.events = (localStorage.getItem('events') === null) ? [] : JSON.parse(localStorage.getItem('events'));
 
@@ -26,31 +14,17 @@ angular
             }
         };
 
-        $scope.confirm_event = function(){
-            if (typeof $scope.eventname == 'undefined' || typeof $scope.from == 'undefined'){
-                supersonic.ui.dialog.alert("Make sure to specify the event name or starting time. Event not saved.");
-                return;
-            }
+        supersonic.data.channel('confirmedEvent').subscribe( function(message) {
+            supersonic.logger.error("received a message " + JSON.stringify(message));
 
-            var eventObject = {
-                eventname: $scope.eventname,
-                location: $scope.location,
-                from: $scope.from,
-                until: $scope.until,
-                description: $scope.description
-            };
+            supersonic.logger.error("before adding:"+JSON.stringify($scope.events));
 
-            $scope.events.push(eventObject);
+            $scope.events.push(message);
+            supersonic.logger.error("after adding:"+JSON.stringify($scope.events));
+
             localStorage.setItem('events', JSON.stringify($scope.events));
 
-            supersonic.ui.dialog.alert("event saved and added to calendar");
-        };
-
-        $scope.cancel_event = function(){
-            supersonic.logger.error("scope:"+$scope.eventname);
-
-            supersonic.ui.dialog.alert("cancelled");
-        };
+        });
 
         $scope.openCalendar = function(){
             supersonic.ui.drawers.close();
@@ -62,7 +36,6 @@ angular
                      supersonic.app.openURL("calshow://");
                  }
              });
-
         };
 
  });
