@@ -22,7 +22,7 @@ angular
                supersonic.ui.dialog.alert("Make sure to specify the event name or starting time. Event not saved.");
                return;
            }
-           var eventObject = {               
+           var eventObject = {
                eventname: $scope.eventname,
                location: $scope.location,
                from: $scope.from,
