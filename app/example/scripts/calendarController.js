@@ -1,6 +1,6 @@
 angular
     .module('example')
-    .controller('calendarController', function($scope, supersonic) {
+    .controller('CalendarController', function($scope, supersonic) {
 
         //$scope.eventname = "calendarview";
 

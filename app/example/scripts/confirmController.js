@@ -1,6 +1,6 @@
 angular
     .module('example')
-    .controller('confirmController', function($scope, supersonic) {
+    .controller('ConfirmController', function($scope, supersonic) {
 
         //first thing to do when the confirm modal shows is set the fields for display
         function init(){
