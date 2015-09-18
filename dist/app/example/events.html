@@ -22,6 +22,8 @@
   <script src="/components/angular/angular.js"></script>
   <script src="/components/supersonic/supersonic.js"></script>
   <script src="/components/webcomponentsjs/webcomponents.js"></script>
+  <script src="/components/parse/parse.min.js"></script>
+
 
   
   <script src="/app/common.js"></script>
@@ -33,34 +35,34 @@
 
 <div class="padding" ng-controller="calendarController">
 
-  <super-navbar>
-    <super-navbar-title> Events </super-navbar-title>
+    <super-navbar>
+        <super-navbar-title> Events </super-navbar-title>
 
-    <super-navbar-button side="right" onclick="supersonic.ui.drawers.open('right');">
-    </super-navbar-button>
+        <super-navbar-button side="right" onclick="supersonic.ui.drawers.open('right');">
+        </super-navbar-button>
 
-  </super-navbar>
+    </super-navbar>
 
-  <div class="card" data-ng-repeat="event in events">
-      <div class="item item-divider">
-          {{ event['eventname'] }}
-          <img id="cancel" src="/icons/cancel.png" alt="Cancel" ng-click="removeEvent(event)">
-      </div>
-      <div class="item item-text-wrap">
-          <div>
-              Start: {{ event['from'] }}
-          </div>
-          <div>
-              End: {{ event['until'] }}
-          </div>
-      </div>
-      <div class="item item-text-wrap">
-        {{ event['location'] }}
-      </div>
-      <div class="item item-divider">
-        {{ event['description'] }}
-      </div>
-  </div>
+    <div class="card" data-ng-repeat="event in events track by $index">
+        <div class="item item-divider">
+            {{ event['eventname'] }}
+            <img id="cancel" src="/icons/cancel.png" alt="Cancel" ng-click="removeEvent(event)">
+        </div>
+
+        <div class="item item-text-wrap">
+            <div> Start: {{ event['from'] }} </div>
+            <div> End: {{ event['until'] }} </div>
+        </div>
+
+        <div class="item item-text-wrap">
+            {{ event['location'] }}
+        </div>
+
+        <div class="item item-divider">
+            {{ event['description'] }}
+        </div>
+
+    </div>
 
 </div>
 

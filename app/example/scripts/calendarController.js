@@ -2,7 +2,7 @@ angular
     .module('example')
     .controller('calendarController', function($scope, supersonic) {
 
-        $scope.eventname = "calendarview";
+        //$scope.eventname = "calendarview";
 
         $scope.events = (localStorage.getItem('events') === null) ? [] : JSON.parse(localStorage.getItem('events'));
 
@@ -11,19 +11,16 @@ angular
             if(index != -1){
                 $scope.events.splice(index,1);
                 localStorage.setItem('events', JSON.stringify($scope.events));
+                supersonic.logger.error("after removed: "+JSON.stringify($scope.events));
             }
         };
 
         supersonic.data.channel('confirmedEvent').subscribe( function(message) {
-            supersonic.logger.error("received a message " + JSON.stringify(message));
-
-            supersonic.logger.error("before adding:"+JSON.stringify($scope.events));
+            //have to re-intialize events because the channel doesn't register removes
+            $scope.events = (localStorage.getItem('events') === null) ? [] : JSON.parse(localStorage.getItem('events'));
 
             $scope.events.push(message);
-            supersonic.logger.error("after adding:"+JSON.stringify($scope.events));
-
             localStorage.setItem('events', JSON.stringify($scope.events));
-
         });
 
         $scope.openCalendar = function(){

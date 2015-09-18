@@ -3,7 +3,7 @@ angular
     .controller('confirmController', function($scope, supersonic) {
 
         //first thing to do when the confirm modal shows is set the fields for display
-        (function(){
+        function init(){
             var last_new_event = JSON.parse(localStorage.getItem('last_new_event'));
 
             $scope.eventname = last_new_event.eventname;
@@ -15,14 +15,16 @@ angular
             supersonic.logger.error("set successfully to: "+$scope.eventname);
             supersonic.logger.error("after showing modal");
 
-       })();
+       }
+       init();
 
        $scope.confirm_event = function(){
            if (typeof $scope.eventname == 'undefined' || typeof $scope.from == 'undefined'){
                supersonic.ui.dialog.alert("Make sure to specify the event name or starting time. Event not saved.");
                return;
            }
-           var eventObject = {               
+
+           var eventObject = {
                eventname: $scope.eventname,
                location: $scope.location,
                from: $scope.from,
@@ -30,17 +32,13 @@ angular
                description: $scope.description
            };
 
-            //$scope.events.push(eventObject);
-            //localStorage.setItem('events', JSON.stringify($scope.events));
-            supersonic.data.channel('confirmedEvent').publish(eventObject);
-
-            supersonic.ui.dialog.alert("event saved and added to calendar");
+           supersonic.data.channel('confirmedEvent').publish(eventObject);
+           supersonic.ui.dialog.alert("event saved and added to calendar");
         };
 
        $scope.cancel_event = function(){
            supersonic.logger.error("scope:"+$scope.eventname);
-
-            supersonic.ui.dialog.alert("cancelled");
+           supersonic.ui.dialog.alert("cancelled");
        };
 
     });

@@ -1,26 +1,28 @@
 <script>
-  document.addEventListener("touchmove", function(e){
-    e.preventDefault();
-  });
+    document.addEventListener("touchmove", function(e){
+        e.preventDefault();
+    });
 </script>
+
 <ul class="list" ng-controller="calendarController">
+
+    <!--main page - take a picture-->
     <super-navigate view-id="example#photos">
         <li class="item" onclick="supersonic.ui.drawers.close()">Take Picture</li>
     </super-navigate>
 
+    <!--open calendar-->
     <li class="item" ng-click="openCalendar()">Calendar</li>
 
-<!--<super-navigate view-id="calshow://">
-</super-navigate> -->
+    <!--upload picture-->
+    <li class="item" ng-controller="PhotosController" ng-click="pickPhoto()">Upload Picture</li>
 
-    <super-navigate view-id="example#upload">
-      <li class="item" onclick="supersonic.ui.drawers.close()">Upload Picture</li>
-    </super-navigate>
-
+    <!--open saved events-->
     <super-navigate view-id="example#events">
       <li class="item" onclick="supersonic.ui.drawers.close()">Events</li>
     </super-navigate>
 
+    <!--open about page-->
     <super-navigate view-id="example#about">
       <li class="item" onclick="supersonic.ui.drawers.close()">About</li>
     </super-navigate>

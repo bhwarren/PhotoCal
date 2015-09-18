@@ -1,19 +1,25 @@
 <div class="padding" ng-controller="PhotosController">
 
-  <super-navbar >
-    <super-navbar-title> <!-- ng-controller="sharedController" ng-bind="navbarTitle">  overrides the title by binding to PhotosController -->
-        PhotosCal
-    </super-navbar-title>
+    <super-navbar >
+        <super-navbar-title>
+            PhotosCal
+        </super-navbar-title>
 
-    <super-navbar-button side="right" onclick="supersonic.ui.drawers.open('right');"> </super-navbar-button>
+        <super-navbar-button side="right" onclick="supersonic.ui.drawers.open('right');"> </super-navbar-button>
 
-  </super-navbar>
+    </super-navbar>
 
 
     <button class="button button-block button-positive icon-left super-camera" ng-click="getCamera()">
         Take a picture
     </button>
 
-    <button class="button button-block button-positive icon-left super-camera" ng-click="confirm()"> Modal</button>
+    <button class="button button-block button-positive icon-left super-camera" ng-click="confirm()">
+        Modal
+    </button>
+
+    <button class="button button-block button-positive icon-left super-camera" ng-controller="formController" ng-click="testParse()">
+        TestParse
+    </button>
 
 </div>

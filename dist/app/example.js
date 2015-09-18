@@ -4,44 +4,69 @@ angular.module('example', [
 ]);
 
 angular
-  .module('example')
-  .controller('PhotosController', function($scope, supersonic) {
+    .module('example')
+    .controller('PhotosController', function($scope, supersonic) {
 
-    $scope.getCamera = function(){
-        var options = {
-          quality: 50,
-          allowEdit: false,
-          encodingType: "png",
-          saveToPhotoAlbum: true
+        function confirmEvent(message){
+            localStorage.setItem('last_new_event', JSON.stringify(message));
+            supersonic.ui.modal.show("example#confirm_modal");
+        }
+
+        $scope.getCamera = function(){
+            var options = {
+              quality: 50,
+              allowEdit: false,
+              encodingType: "png",
+              saveToPhotoAlbum: true
+            };
+
+            supersonic.media.camera.takePicture(options).then( function(result){
+                var message = {
+                    eventname: "carolina neuroscience club",
+                    location: "genome g100",
+                    from: "7:30pm on 9/14",
+                    until: "",
+                    description: "carolina neuroscience club is hosting a panel...."
+                };
+
+                confirmEvent(message);
+            });
         };
 
-        supersonic.media.camera.takePicture(options).then( function(result){
+        $scope.confirm = function(){
             var message = {
-                eventname: "Halloween Party222",
+                eventname: "Halloween Party",
                 location: "666 Elm Street",
-                from: "10pm",
-                until: "3am",
+                from: "10pm on 10/31",
+                until: "3am on 11/1",
                 description: "a party so good, you'll dream about it"
             };
 
-            localStorage.setItem('last_new_event', JSON.stringify(message));
-            supersonic.ui.modal.show("example#confirm_modal");
-        });
-    };
-
-    $scope.confirm = function(){
-        var message = {
-            eventname: "Halloween Party",
-            location: "666 Elm Street",
-            from: "10pm",
-            until: "3am",
-            description: "a party so good, you'll dream about it"
+            confirmEvent(message);
         };
 
-        localStorage.setItem('last_new_event', JSON.stringify(message));
-        supersonic.ui.modal.show("example#confirm_modal");
-    };
-    //localStorage.clear();
+        $scope.pickPhoto = function(){
+            supersonic.ui.drawers.close();
+
+            var options = {
+              quality: 50,
+              allowEdit: true,
+              encodingType: "png",
+            };
+
+            supersonic.media.camera.getFromPhotoLibrary(options).then( function(result){
+                // Do something with the image URI
+                var message = {
+                    eventname: "carolina neuroscience club",
+                    location: "genome g100",
+                    from: "7:30pm on 9/14",
+                    until: "",
+                    description: "carolina neuroscience club is hosting a panel...."
+                };
+                confirmEvent(message);
+
+            });
+        };
 
   });
 
@@ -49,7 +74,7 @@ angular
     .module('example')
     .controller('calendarController', function($scope, supersonic) {
 
-        $scope.eventname = "calendarview";
+        //$scope.eventname = "calendarview";
 
         $scope.events = (localStorage.getItem('events') === null) ? [] : JSON.parse(localStorage.getItem('events'));
 
@@ -58,19 +83,16 @@ angular
             if(index != -1){
                 $scope.events.splice(index,1);
                 localStorage.setItem('events', JSON.stringify($scope.events));
+                supersonic.logger.error("after removed: "+JSON.stringify($scope.events));
             }
         };
 
         supersonic.data.channel('confirmedEvent').subscribe( function(message) {
-            supersonic.logger.error("received a message " + JSON.stringify(message));
-
-            supersonic.logger.error("before adding:"+JSON.stringify($scope.events));
+            //have to re-intialize events because the channel doesn't register removes
+            $scope.events = (localStorage.getItem('events') === null) ? [] : JSON.parse(localStorage.getItem('events'));
 
             $scope.events.push(message);
-            supersonic.logger.error("after adding:"+JSON.stringify($scope.events));
-
             localStorage.setItem('events', JSON.stringify($scope.events));
-
         });
 
         $scope.openCalendar = function(){
@@ -92,7 +114,7 @@ angular
     .controller('confirmController', function($scope, supersonic) {
 
         //first thing to do when the confirm modal shows is set the fields for display
-        (function(){
+        function init(){
             var last_new_event = JSON.parse(localStorage.getItem('last_new_event'));
 
             $scope.eventname = last_new_event.eventname;
@@ -104,14 +126,16 @@ angular
             supersonic.logger.error("set successfully to: "+$scope.eventname);
             supersonic.logger.error("after showing modal");
 
-       })();
+       }
+       init();
 
        $scope.confirm_event = function(){
            if (typeof $scope.eventname == 'undefined' || typeof $scope.from == 'undefined'){
                supersonic.ui.dialog.alert("Make sure to specify the event name or starting time. Event not saved.");
                return;
            }
-           var eventObject = {               
+
+           var eventObject = {
                eventname: $scope.eventname,
                location: $scope.location,
                from: $scope.from,
@@ -119,17 +143,32 @@ angular
                description: $scope.description
            };
 
-            //$scope.events.push(eventObject);
-            //localStorage.setItem('events', JSON.stringify($scope.events));
-            supersonic.data.channel('confirmedEvent').publish(eventObject);
-
-            supersonic.ui.dialog.alert("event saved and added to calendar");
+           supersonic.data.channel('confirmedEvent').publish(eventObject);
+           supersonic.ui.dialog.alert("event saved and added to calendar");
         };
 
        $scope.cancel_event = function(){
            supersonic.logger.error("scope:"+$scope.eventname);
-
-            supersonic.ui.dialog.alert("cancelled");
+           supersonic.ui.dialog.alert("cancelled");
        };
 
     });
+
+angular
+    .module('example')
+    .controller('formController', function($scope, supersonic) {
+        supersonic.logger.info("working");
+        //the necessary parse.js is in dist/components
+        Parse.initialize("QJFRh4kOQE9BUkNrLnzVb2wMzpDXBClI924yDPKr",  "rFDDxElNe4GXt5swG9vAODJS5SElopzsaQNbqifS");
+
+        $scope.testParse = function(){
+            supersonic.logger.info("parse started");
+
+            var TestObject = Parse.Object.extend("TestObject");
+            var testObject = new TestObject();
+            testObject.save({foo: "bar"}).then(function(object) {
+                supersonic.logger.info("yay! it worked");
+            });
+      };
+
+  });
