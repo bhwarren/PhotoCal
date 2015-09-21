@@ -1,0 +1,32 @@
+<div class="padding" ng-controller="CalendarController">
+
+    <super-navbar>
+        <super-navbar-title> Events </super-navbar-title>
+
+        <super-navbar-button side="right" onclick="supersonic.ui.drawers.open('right');">
+        </super-navbar-button>
+
+    </super-navbar>
+
+    <div class="card" data-ng-repeat="event in events track by $index">
+        <div class="item item-divider">
+            {{ event['eventname'] }}
+            <img id="cancel" src="/icons/cancel.png" alt="Cancel" ng-click="removeEvent(event)">
+        </div>
+
+        <div class="item item-text-wrap">
+            <div> Start: {{ event['from'] }} </div>
+            <div> End: {{ event['until'] }} </div>
+        </div>
+
+        <div class="item item-text-wrap">
+            {{ event['location'] }}
+        </div>
+
+        <div class="item item-divider">
+            {{ event['description'] }}
+        </div>
+
+    </div>
+
+</div>

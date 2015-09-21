@@ -1,0 +1,19 @@
+{
+  "drawers": {
+    "right": {
+      "id": "rightDrawer",
+      "location": "http://localhost/app/example/drawer.html",
+      "showOnAppLoad": false
+    },
+    "options": {
+      "animation": "swingingDoor"
+    }
+  },
+  "tabs": [],
+  "rootView": {
+    "location": "http://localhost/app/example/photos.html"
+  },
+  "configuration": {
+    "extra_response_headers": {}
+  }
+}
