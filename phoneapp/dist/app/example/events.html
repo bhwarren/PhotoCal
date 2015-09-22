@@ -43,6 +43,8 @@
 
     </super-navbar>
 
+    <h3 ng-bind="eventsAdded"></h3>
+
     <div class="card" data-ng-repeat="event in events track by $index">
         <div class="item item-divider">
             {{ event['eventname'] }}

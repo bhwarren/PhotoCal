@@ -6,6 +6,8 @@ angular
 
         $scope.events = (localStorage.getItem('events') === null) ? [] : JSON.parse(localStorage.getItem('events'));
 
+        $scope.eventsAdded = ($scope.events.length === 0 ) ?  "No events added yet" : "Click the x to delete an event";
+
         $scope.removeEvent = function(removeObject){
             var index = $scope.events.indexOf(removeObject);
             if(index != -1){
@@ -13,6 +15,7 @@ angular
                 localStorage.setItem('events', JSON.stringify($scope.events));
                 supersonic.logger.error("after removed: "+JSON.stringify($scope.events));
             }
+            $scope.eventsAdded = ($scope.events.length === 0 ) ?  "No events added yet" : "Click the x to delete an event";
         };
 
         supersonic.data.channel('confirmedEvent').subscribe( function(message) {
