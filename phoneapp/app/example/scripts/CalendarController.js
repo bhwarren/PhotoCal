@@ -2,6 +2,11 @@ angular
     .module('example')
     .controller('CalendarController', function($scope, supersonic) {
 
+        /*var hidePreview = supersonic.ui.views.current.whenVisible( function() {
+            cordova.plugins.camerapreview.hide();
+            hidePreview();
+        });*/
+
         //$scope.eventname = "calendarview";
 
         $scope.events = (localStorage.getItem('events') === null) ? [] : JSON.parse(localStorage.getItem('events'));
@@ -30,7 +35,8 @@ angular
             supersonic.ui.drawers.close();
             supersonic.device.platform().then( function(platform) {
                  if(platform.name == "Android"){
-                     supersonic.ui.dialog.alert("need a plugin to open 4 android, sorry");
+                     //supersonic.ui.dialog.alert("need a plugin to open 4 android, sorry");
+                     window.plugins.calendar.openCalendar();
                  }
                  else{
                      supersonic.app.openURL("calshow://");

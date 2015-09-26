@@ -23,6 +23,8 @@
     <script src="/components/supersonic/supersonic.js"></script>
     <script src="/components/webcomponentsjs/webcomponents.js"></script>
     <script src="/components/parse/parse.min.js"></script>
+    <script src="/components/jquery/dist/jquery.min.js"></script>
+
 
 
     
@@ -39,7 +41,7 @@
     });
 </script>
 
-<ul class="list" ng-controller="CalendarController">
+<ul id="drawerList" class="list" ng-controller="CalendarController">
 
     <!--main page - take a picture-->
     <super-navigate view-id="example#photos">
@@ -50,7 +52,7 @@
     <li class="item" ng-click="openCalendar()">Calendar</li>
 
     <!--upload picture-->
-    <li class="item" ng-controller="PhotosController" ng-click="pickPhoto()">Upload Picture</li>
+    <!-- <li class="item" ng-controller="PhotosController" ng-click="pickPhoto()">Upload Picture</li> -->
 
     <!--open saved events-->
     <super-navigate view-id="example#events">

@@ -23,6 +23,8 @@
     <script src="/components/supersonic/supersonic.js"></script>
     <script src="/components/webcomponentsjs/webcomponents.js"></script>
     <script src="/components/parse/parse.min.js"></script>
+    <script src="/components/jquery/dist/jquery.min.js"></script>
+
 
 
     
@@ -33,22 +35,29 @@
 </head>
 <body ng-app="example">
 
-<div class="padding" ng-controller="PhotosController">
+<div class="padding" ng-controller="PhotosController" id="mainContainer">
+
 
     <super-navbar >
-        <super-navbar-title>
+        <super-navbar-title >
             PhotosCal
         </super-navbar-title>
 
-        <super-navbar-button side="right" onclick="supersonic.ui.drawers.open('right');"> </super-navbar-button>
+        <super-navbar-button side="right" id="hamburger" ng-click="showDrawer()"> </super-navbar-button>
 
     </super-navbar>
 
 
-    <button class="button button-block button-positive icon-left super-camera" ng-click="getCamera()">
+
+<div id="beginInner">
+
+</div>
+
+     <button id="shutter" class="button button-block button-positive icon-left super-camera" ng-click="getCamera()">
         Take a picture
     </button>
 
+<!-- <canvas id="camera" width="352" height="288" style="border:2px"></canvas> -->
 
 <!--
     <button class="button button-block button-positive icon-left super-camera" ng-click="confirm()">
@@ -61,6 +70,13 @@
         </button>
     </div>
 -->
+
+        <!-- <div class="row row-center">
+            <button class="button button-block button-positive icon-left super-camera" ng-click="startPreview()">
+                Modal
+            </button>
+        </div> -->
+
 
 
 </div>
