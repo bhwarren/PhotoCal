@@ -2,6 +2,9 @@ angular
     .module('example')
     .controller('ConfirmController', function($scope, supersonic) {
 
+        cordova.plugins.camerapreview.hide();
+
+
         //first thing to do when the confirm modal shows is set the fields for display
         function init(){
             var last_new_event = JSON.parse(localStorage.getItem('last_new_event'));
