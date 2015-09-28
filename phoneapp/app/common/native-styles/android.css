@@ -31,6 +31,7 @@ navigation-bar back-indicator {
 navigation-bar back-button {
   color: #ffffff;
   font-weight: 300;
+  background-image: url(icons/camera3.svg);
 }
 
 /**************************************

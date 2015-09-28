@@ -11,8 +11,32 @@ angular
             cordova.plugins.camerapreview.hide();
             hidePreview();
         });*/
-        cordova.plugins.camerapreview.hide();
+        //cordova.plugins.camerapreview.hide();
 
+        leftButton = new supersonic.ui.NavigationBarButton( {
+          title: "",
+          onTap: function() {
+            $scope.goToPhotos();
+          }
+        });
+        rightButton = new supersonic.ui.NavigationBarButton( {
+          title: "",
+          onTap: function() {
+            supersonic.ui.drawers.open('right');
+          }
+        });
+
+        options = {
+          title: "Events",
+          overrideBackButton: true,
+          backButton: leftButton,
+          buttons: {
+            right: [rightButton]
+
+          }
+      };
+
+        supersonic.ui.navigationBar.update(options);
 
         //$scope.eventname = "calendarview";
 
@@ -21,6 +45,29 @@ angular
 
         $scope.eventsAdded = ($scope.events.length === 0) ?
                             "No events added yet" : "Click the x to delete an event";
+
+        $scope.goToPhotos = function(){
+            supersonic.logger.error("fffffffff");
+            localStorage.setItem('currentView', "photos");
+            supersonic.ui.drawers.close();
+            supersonic.ui.layers.popAll();
+        };
+
+        $scope.goToEvents = function(){
+            localStorage.setItem('currentView', "events");
+            supersonic.ui.drawers.close();
+            cordova.plugins.camerapreview.hide();
+        };
+
+
+        $scope.goToAbout = function(){
+            localStorage.setItem('currentView', "about");
+            supersonic.ui.drawers.close();
+            cordova.plugins.camerapreview.hide();
+
+            supersonic.ui.modal.show("example#about");
+
+        };
 
         $scope.removeEvent = function(removeObject) {
             var index = $scope.events.indexOf(removeObject);
@@ -135,10 +182,15 @@ angular
     .module('example')
     .controller('PhotosController', function($scope, supersonic) {
 
+        document.addEventListener("deviceready", function() {
 
         supersonic.ui.drawers.whenWillClose(function() {
-            cordova.plugins.camerapreview.show();
+
+            if(localStorage.getItem('currentView') == "photos"){
+                cordova.plugins.camerapreview.show();
+            }
             supersonic.logger.error("drawer closed, shown preview");
+            supersonic.logger.error("currentview keys: "+JSON.stringify(supersonic.ui.views.current.id));
         });
 
         supersonic.ui.views.current.whenHidden(function() {
@@ -167,13 +219,15 @@ angular
         //supersonic.ui.views.find("photos").then( function(startedView) {
         //supersonic.logger.error("this sucks");
         //$(document).ready(function() {
-        document.addEventListener("deviceready", function() {
+        //document.addEventListener("deviceready", function() {
             $(document).ready(function() {
                 //if this is the drawer opening this script, don't restart the camera preview
                 //neccesary
                 if ($('#drawerList').length) {
                     return;
                 }
+
+                localStorage.setItem('currentView', "photos");
 
                 supersonic.logger.error("before");
                 var hgt = $(document).height();
@@ -195,7 +249,7 @@ angular
                     x: 0,
                     y: topOffset,
                     width: wdt,
-                    height: hgt - topOffset - buttonSize 
+                    height: hgt - topOffset - buttonSize
                 };
                 //supersonic.logger.error("after rect");
                 cordova.plugins.camerapreview.startCamera( rect, "back", tapEnabled, dragEnabled, toBack);
@@ -203,7 +257,7 @@ angular
                 supersonic.logger.error("this sucks");
             });
 
-        }, false);
+        //}, false);
 
 
         //store the event locally, and add it to our calendar via a modal
@@ -277,5 +331,6 @@ angular
                 $scope.pickPhoto();
             }
         });
+    }, false);
 
     });

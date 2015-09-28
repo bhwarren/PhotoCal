@@ -6,8 +6,32 @@ angular
             cordova.plugins.camerapreview.hide();
             hidePreview();
         });*/
-        cordova.plugins.camerapreview.hide();
+        //cordova.plugins.camerapreview.hide();
 
+        leftButton = new supersonic.ui.NavigationBarButton( {
+          title: "",
+          onTap: function() {
+            $scope.goToPhotos();
+          }
+        });
+        rightButton = new supersonic.ui.NavigationBarButton( {
+          title: "",
+          onTap: function() {
+            supersonic.ui.drawers.open('right');
+          }
+        });
+
+        options = {
+          title: "Events",
+          overrideBackButton: true,
+          backButton: leftButton,
+          buttons: {
+            right: [rightButton]
+
+          }
+      };
+
+        supersonic.ui.navigationBar.update(options);
 
         //$scope.eventname = "calendarview";
 
@@ -16,6 +40,29 @@ angular
 
         $scope.eventsAdded = ($scope.events.length === 0) ?
                             "No events added yet" : "Click the x to delete an event";
+
+        $scope.goToPhotos = function(){
+            supersonic.logger.error("fffffffff");
+            localStorage.setItem('currentView', "photos");
+            supersonic.ui.drawers.close();
+            supersonic.ui.layers.popAll();
+        };
+
+        $scope.goToEvents = function(){
+            localStorage.setItem('currentView', "events");
+            supersonic.ui.drawers.close();
+            cordova.plugins.camerapreview.hide();
+        };
+
+
+        $scope.goToAbout = function(){
+            localStorage.setItem('currentView', "about");
+            supersonic.ui.drawers.close();
+            cordova.plugins.camerapreview.hide();
+
+            supersonic.ui.modal.show("example#about");
+
+        };
 
         $scope.removeEvent = function(removeObject) {
             var index = $scope.events.indexOf(removeObject);

@@ -46,24 +46,23 @@
 <ul id="drawerList" class="list" ng-controller="CalendarController">
 
     <!--main page - take a picture-->
-    <li class="item" onclick="supersonic.ui.drawers.close();supersonic.ui.layers.popAll()">Take Picture</li>
+    <li class="item" ng-click="goToPhotos()">Take Picture</li>
 
     <!--open calendar-->
     <li class="item" ng-click="openCalendar()">Calendar</li>
 
     <!--upload picture-->
-    <!-- <li class="item" ng-controller="PhotosController" ng-click="pickPhoto()">Upload Picture</li> -->
     <li class="item" ng-click="pickPhotoPass()">Upload Picture</li>
 
     <!--open saved events-->
     <super-navigate view-id="example#events">
-      <li class="item" onclick="supersonic.ui.drawers.close();cordova.plugins.camerapreview.hide();">Events</li>
+      <li class="item" ng-click="goToEvents()">Events</li>
     </super-navigate>
 
     <!--open about page-->
-    <super-navigate view-id="example#about">
-      <li class="item" onclick="supersonic.ui.drawers.close()">About</li>
-    </super-navigate>
+    <!-- <super-navigate view-id="example#about"> -->
+      <li class="item" ng-click="goToAbout()">About</li>
+    <!-- </super-navigate> -->
 
 </ul>
 
