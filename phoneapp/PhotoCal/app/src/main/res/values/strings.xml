@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">PhotoCal</string>
+
+    <string name="title_section0">Snap Picture</string>
+    <string name="title_section1">Upload Picture</string>
+    <string name="title_section2">Open Calendar</string>
+    <string name="title_section3">Show Events</string>
+    <string name="title_section4">About</string>
+
+
+    <string name="switch_camera">"Switch Camera"</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+</resources>

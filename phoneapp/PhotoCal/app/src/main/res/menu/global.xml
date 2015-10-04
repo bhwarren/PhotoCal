@@ -1,0 +1,36 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_example"
+        android:title="@string/action_example"
+        app:showAsAction="withText|ifRoom"
+        />
+
+    <item
+        android:id="@+id/snap_photo"
+        android:title="@string/title_section0"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/upload_picture"
+        android:title="@string/title_section1"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/open_calendar"
+        android:title="@string/title_section2"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/show_events"
+        android:title="@string/title_section3"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/about"
+        android:title="@string/title_section4"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+</menu>
