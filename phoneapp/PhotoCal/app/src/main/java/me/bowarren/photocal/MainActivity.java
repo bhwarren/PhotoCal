@@ -33,9 +33,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
     private CharSequence mTitle;
 
     @Override
@@ -58,78 +55,6 @@ public class MainActivity extends AppCompatActivity {
 //                (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
-//    @Override
-//    public void onNavigationDrawerItemSelected(int position) {
-//        // update the main content by replacing fragments
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//
-//        switch(position){
-//            // camera preview
-//            case 0:
-////                fragmentManager.beginTransaction()
-////                        .replace(R.id.container, new CameraFragment())
-////                        .commit();
-//                break;
-//            //upload picture
-//            case 1:
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-//                        .commit();
-//                break;
-//
-//            //open calendar
-//            case 2:
-//                long startMillis = System.currentTimeMillis();
-//                Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
-//                builder.appendPath("time");
-//                ContentUris.appendId(builder, startMillis);
-//                Intent intent = new Intent(Intent.ACTION_VIEW)
-//                        .setData(builder.build());
-//                startActivity(intent);
-//                break;
-//
-//            //show events locally taken
-//            case 3:
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.container, new EventsFragment())
-//                        .commit();
-//                break;
-//
-//            //about
-//            case 4:
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.container, new AboutFragment())
-//                        .commit();
-//                break;
-//        }
-//    }
-
-//    public void onSectionAttached(int number) {
-//        switch (number) {
-//            case 0:
-//                mTitle = getString(R.string.title_section0);
-//                break;
-//            case 1:
-//                mTitle = getString(R.string.title_section1);
-//                break;
-//            case 2:
-//                mTitle = getString(R.string.title_section2);
-//                break;
-//            case 3:
-//                mTitle = getString(R.string.title_section3);
-//                break;
-//            case 4:
-//                mTitle = getString(R.string.title_section4);
-//                break;
-//        }
-//    }
-//
-//    public void restoreActionBar() {
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-//        actionBar.setDisplayShowTitleEnabled(true);
-//        actionBar.setTitle(mTitle);
-//    }
 
 
     @Override
@@ -173,13 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
             //open calendar
             case R.id.open_calendar:
-                long startMillis = System.currentTimeMillis();
-                Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
-                builder.appendPath("time");
-                ContentUris.appendId(builder, startMillis);
-                Intent intent = new Intent(Intent.ACTION_VIEW)
-                        .setData(builder.build());
-                startActivity(intent);
+                CalendarHelper.openCalendar(this);
                 break;
 
             //show events locally taken

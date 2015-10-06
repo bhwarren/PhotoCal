@@ -119,7 +119,7 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
 
             }
-            if(height>width) {
+            if(height>width && mCamera != null) {
                 mCamera.setDisplayOrientation(90);
             }
 
@@ -139,6 +139,7 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
 
     public void surfaceCreated(SurfaceHolder holder) {
+        Log.e("f", "surface created");
         // The Surface has been created, acquire the camera and tell it where
         // to draw.
         try {
@@ -153,6 +154,8 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.e("f", "surface destroyed");
+
         // Surface will be destroyed when we return, so stop the preview.
         if (mCamera != null) {
             mCamera.stopPreview();
@@ -176,7 +179,7 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
         // Try to find an size match aspect ratio and size
         for (Size size : sizes) {
-            Log.e("f", "size w: "+String.valueOf(size.width)+" h: "+ toString().valueOf(size.height));
+            //Log.e("f", "size w: "+String.valueOf(size.width)+" h: "+ toString().valueOf(size.height));
             double ratio = (double) size.width / size.height;
             if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
                 continue;
@@ -205,10 +208,10 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
     }
 
-
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         // Now that the size is known, set up the camera parameters and begin
         // the preview.
+        if(mCamera == null) return;
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
         requestLayout();

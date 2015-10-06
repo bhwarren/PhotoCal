@@ -6,7 +6,7 @@ package me.bowarren.photocal;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ *app
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -47,6 +47,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 
 public class CameraFragment extends android.support.v4.app.Fragment {
@@ -67,8 +68,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
 
         // Create a container that will hold a SurfaceView for camera previews
         mPreview = new Preview(this.getActivity());
-        mPreview.setOnTouchListener(
-                new OnTouchListener(){
+        mPreview.setOnTouchListener( new OnTouchListener(){
                     @Override
                     public boolean onTouch(View v, MotionEvent event){
                         if(event.getAction() != MotionEvent.ACTION_DOWN){
@@ -90,26 +90,27 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                                 if (pic.exists()) {
                                     pic.delete();
                                 }
+
+                                //try writing the picture
                                 try {
                                     FileOutputStream out = new FileOutputStream(pic);
                                     out.write(data);
                                     out.close();
 
-                                    Intent intent = new Intent();
-                                    intent.setAction(Intent.ACTION_VIEW);
-                                    intent.setDataAndType( android.net.Uri.parse(pic.toURI().toString()), "image/*");
-                                    startActivity(intent);
+                                    //here's where we upload the picture & add its info the the native calendar
+                                    PhotoCalEvent ocrEvent = CalendarHelper.getEventInfo(pic, getActivity());
+                                    CalendarHelper.addToCalendar(ocrEvent, getActivity());
+
                                 }
                                 catch(FileNotFoundException e){
-                                    Toast.makeText(getContext(), "faile to find file", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "failed to find file", Toast.LENGTH_SHORT).show();
                                     e.printStackTrace();
                                 }
                                 catch(IOException e){
                                     Toast.makeText(getContext(), "Io exception", Toast.LENGTH_SHORT).show();
                                     e.printStackTrace();
-
-
                                 }
+
                             }
                         });
 
@@ -151,12 +152,15 @@ public class CameraFragment extends android.support.v4.app.Fragment {
         return mPreview;
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
 
         // Use mCurrentCamera to select the camera desired to safely restore
         // the fragment after the camera has been changed
+        Log.e("F", "resumed, getting camera back");
         mCamera = Camera.open(mCurrentCamera);
         mCameraCurrentlyLocked = mCurrentCamera;
         mPreview.setCamera(mCamera);
@@ -169,6 +173,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
         // Because the Camera object is a shared resource, it's very
         // important to release it when the activity is paused.
         if (mCamera != null) {
+            Log.e("F", "releasing camera");
             mPreview.setCamera(null);
             mCamera.release();
             mCamera = null;
@@ -219,4 +224,5 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

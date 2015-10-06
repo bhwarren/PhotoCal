@@ -58,14 +58,15 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
 
         View retView = inflater.inflate(R.layout.events_view, container, false);
         context = retView.getContext();
-        eh = new EventHolder();
-        //eh.addEvent(new PhotoCalEvent("Test Event", new Date(), new Date(), "location", "description"));
+        eh = new EventHolder(getContext());
+        //eh.addEvent(new PhotoCalEvent("Test Event", new Date(), new Date(), "location", "description", getActivity()));
 
         adapter = new GridViewAdapter(retView.getContext(), eh.savedEvents);
         setListAdapter(adapter);
 
         return retView;
     }
+
 
     @Override
     public void onResume() {
@@ -81,142 +82,19 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
     public void onListItemClick (ListView lv, View clicked_view, int index, long row_id){
         Toast.makeText(context, "removing index: "+String.valueOf(index), Toast.LENGTH_SHORT).show();
 
-        if(index >= eh.savedEvents.size())
-            return;
+        if(index < eh.savedEvents.size()) {
+            CalendarHelper.openCalendarEvent(new PhotoCalEvent(eh.savedEvents.get(index)), getActivity());
+            //clickRemove(index);
+        }
+    }
 
+    private void clickRemove(int index) {
         eh.removeEvent(eh.savedEvents.get(index));
         adapter.notifyDataSetChanged();
 
     }
 
 
-
-    private class PhotoCalEvent {
-
-        String eventName;
-        Date begin;
-        Date end;
-        String location;
-        String description;
-
-        public PhotoCalEvent(String eventName, Date begin , Date end,
-                             String location, String description){
-            this.eventName = eventName;
-            this.begin = begin;
-            this.end = end;
-            this.location = location;
-            this.description = description;
-
-        }
-
-        public HashMap toDict(){
-            HashMap thisDict = new HashMap();
-            thisDict.put("eventName", this.eventName);
-            thisDict.put("begin", this.begin);
-            thisDict.put("end", this.end);
-            thisDict.put("location", this.location);
-            thisDict.put("description", this.description);
-            return thisDict;
-        }
-
-    }
-
-    private class EventHolder {
-        private File storage;
-        private ArrayList<HashMap> savedEvents;
-
-
-        public EventHolder(){
-            storage = new File(getContext().getFilesDir(), "eventsStorage");
-            if(!storage.exists()){
-                try {
-                    storage.createNewFile();
-                }
-                catch(IOException e){
-                    e.printStackTrace();
-                }
-            }
-            if(!storage.canRead()){
-                storage.setReadable(true);
-            }
-            if(!storage.canWrite()){
-                storage.setWritable(true);
-            }
-
-            try {
-                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(storage));
-                this.savedEvents = (ArrayList<HashMap>) ois.readObject();
-                ois.close();
-
-                return;
-            }
-            catch(IOException e){
-                e.printStackTrace();
-            }
-            catch(ClassNotFoundException e){
-                e.printStackTrace();
-            }
-
-            //only hits this if exceptions were caught
-            this.savedEvents = new ArrayList<HashMap>();
-
-        }
-
-        //returns a copy of savedEvents
-//        public ArrayList<PhotoCalEvent> getEvents(){
-//            ArrayList<PhotoCalEvent> retObj = new ArrayList<PhotoCalEvent>();
-//            for (HashMap inObj : savedEvents) {
-//                PhotoCalEvent event = new PhotoCalEvent(
-//                        (String) inObj.get("eventName"),
-//                        (Date) inObj.get("begin"),
-//                        (Date) inObj.get("end"),
-//                        (String) inObj.get("location"),
-//                        (String) inObj.get("description"));
-//                retObj.add(event);
-//            }
-//            return retObj;
-//
-//        }
-
-        public boolean addEvent(PhotoCalEvent event){
-            if(savedEvents.add(event.toDict())) {
-                writeEvents();
-                return true;
-            }
-            return false;
-        }
-
-        public void removeEvent(HashMap event){
-
-            for(int i = 0; i< savedEvents.size(); i++){
-
-                boolean isSame =
-                        event.get("eventName").equals( savedEvents.get(i).get("eventName") ) &&
-                        event.get("begin").equals(savedEvents.get(i).get("begin")) &&
-                        event.get("end").equals(savedEvents.get(i).get("end")) &&
-                        event.get("location").equals( savedEvents.get(i).get("location") ) &&
-                        event.get("description").equals( savedEvents.get(i).get("description") );
-
-                if(isSame){
-                    savedEvents.remove(i);
-                    writeEvents();
-                    break;
-                }
-            }
-        }
-
-        //write the savedEvents to file
-        private void writeEvents(){
-            try {
-                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(storage));
-                oos.writeObject(savedEvents);
-                oos.close();
-            }
-            catch(IOException e){
-                e.printStackTrace();
-            }
-        }
-    }
 
     private class GridViewAdapter extends ArrayAdapter{
 
