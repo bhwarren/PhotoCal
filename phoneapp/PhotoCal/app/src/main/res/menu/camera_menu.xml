@@ -13,7 +13,9 @@
      -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:id="@+id/menu_switch_cam"
-    android:title="@string/switch_camera"
-    android:showAsAction="ifRoom" />
+
+    <!-- Add extra items to the menu section here, like switchCamera-->
+<!--<item android:id="@+id/menu_switch_cam"-->
+    <!--android:title="@string/switch_camera"-->
+    <!--android:showAsAction="ifRoom" />-->
 </menu>

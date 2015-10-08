@@ -31,7 +31,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.List;
 
-class Preview extends ViewGroup implements SurfaceHolder.Callback {
+public class Preview extends ViewGroup implements SurfaceHolder.Callback {
     private final String TAG = "Preview";
 
     SurfaceView mSurfaceView;
@@ -124,13 +124,13 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
             }
 
             double scale = (double)previewHeight / height;
-            Log.e("f","aspect ration and height "+String.valueOf(scale)+" "+String.valueOf(height));
+            //Log.e("f","aspect ration and height "+String.valueOf(scale)+" "+String.valueOf(height));
 
 
             int scaledChildWidth = (int) (previewWidth / scale);// (int) ((double) height / previewHeight * previewWidth);
 
 
-            Log.e("f", "adfasfdasdfasd " + String.valueOf(scaledChildWidth));
+            //Log.e("f", "adfasfdasdfasd " + String.valueOf(scaledChildWidth));
             int widthoffset = (width - scaledChildWidth) / 2;
             child.layout(widthoffset, 0, scaledChildWidth + widthoffset, height);
 
@@ -139,7 +139,7 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
 
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.e("f", "surface created");
+        //Log.e("f", "surface created");
         // The Surface has been created, acquire the camera and tell it where
         // to draw.
         try {
@@ -154,7 +154,7 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.e("f", "surface destroyed");
+        //Log.e("f", "surface destroyed");
 
         // Surface will be destroyed when we return, so stop the preview.
         if (mCamera != null) {

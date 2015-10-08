@@ -52,7 +52,7 @@ import java.util.List;
 
 public class CameraFragment extends android.support.v4.app.Fragment {
 
-    private Preview mPreview;
+    public Preview mPreview;
     Camera mCamera;
     int mNumberOfCameras;
     int mCurrentCamera;  // Camera ID currently chosen
@@ -72,7 +72,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                     @Override
                     public boolean onTouch(View v, MotionEvent event){
                         if(event.getAction() != MotionEvent.ACTION_DOWN){
-                            Log.e("F","FfFFFFFFFFFFFFFF");
+                            //Log.e("F","FfFFFFFFFFFFFFFF");
                             return false;
                         }
 
@@ -157,28 +157,31 @@ public class CameraFragment extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        Log.e("f", "resumed");
         // Use mCurrentCamera to select the camera desired to safely restore
         // the fragment after the camera has been changed
-        Log.e("F", "resumed, getting camera back");
+        //Log.e("F", "resumed, getting camera back");
         mCamera = Camera.open(mCurrentCamera);
         mCameraCurrentlyLocked = mCurrentCamera;
         mPreview.setCamera(mCamera);
     }
 
+
     @Override
     public void onPause() {
         super.onPause();
+        Log.e("f", "paused");
 
         // Because the Camera object is a shared resource, it's very
         // important to release it when the activity is paused.
         if (mCamera != null) {
-            Log.e("F", "releasing camera");
+            //Log.e("F", "releasing camera");
             mPreview.setCamera(null);
             mCamera.release();
             mCamera = null;
         }
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -190,39 +193,39 @@ public class CameraFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.menu_switch_cam:
-                // Release this camera -> mCameraCurrentlyLocked
-                if (mCamera != null) {
-                    mCamera.stopPreview();
-                    mPreview.setCamera(null);
-                    mCamera.release();
-                    mCamera = null;
-                }
-
-                // Acquire the next camera and request Preview to reconfigure
-                // parameters.
-                mCurrentCamera = (mCameraCurrentlyLocked + 1) % mNumberOfCameras;
-                mCamera = Camera.open(mCurrentCamera);
-                mCameraCurrentlyLocked = mCurrentCamera;
-                mPreview.switchCamera(mCamera);
-
-                // Start the preview
-                mCamera.startPreview();
-                return true;
-
-            case android.R.id.home:
-                Intent intent = new Intent(this.getActivity(), MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle item selection
+//        switch (item.getItemId()) {
+//            case R.id.menu_switch_cam:
+//                // Release this camera -> mCameraCurrentlyLocked
+//                if (mCamera != null) {
+//                    mCamera.stopPreview();
+//                    mPreview.setCamera(null);
+//                    mCamera.release();
+//                    mCamera = null;
+//                }
+//
+//                // Acquire the next camera and request Preview to reconfigure
+//                // parameters.
+//                mCurrentCamera = (mCameraCurrentlyLocked + 1) % mNumberOfCameras;
+//                mCamera = Camera.open(mCurrentCamera);
+//                mCameraCurrentlyLocked = mCurrentCamera;
+//                mPreview.switchCamera(mCamera);
+//
+//                // Start the preview
+//                mCamera.startPreview();
+//                return true;
+//
+//            case android.R.id.home:
+//                Intent intent = new Intent(this.getActivity(), MainActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivity(intent);
+//                return true;
+//
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
 }

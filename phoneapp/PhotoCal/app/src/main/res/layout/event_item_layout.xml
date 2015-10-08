@@ -4,7 +4,8 @@
 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/event_item_layout">
+    android:id="@+id/event_item_layout"
+    android:padding="30px">
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,7 +13,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="EventName"
         android:id="@+id/eventName"
-        android:layout_row="1"
+        android:layout_row="4"
         android:layout_column="0" />
 
     <TextView
@@ -21,8 +22,20 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Begin Time"
         android:id="@+id/begin"
-        android:layout_row="2"
+        android:layout_row="5"
         android:layout_column="0" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="28dp"
+        android:id="@+id/closeButtonView"
+        android:layout_row="3"
+        android:layout_column="1"
+        android:src="@drawable/close_button"
+        android:layout_columnSpan="2"
+        android:layout_rowSpan="2"
+        android:layout_gravity="right"
+        android:focusable="false" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,7 +43,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="EndTime"
         android:id="@+id/end"
-        android:layout_row="3"
+        android:layout_row="6"
         android:layout_column="0" />
 
     <TextView
@@ -39,7 +52,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Location"
         android:id="@+id/location"
-        android:layout_row="4"
+        android:layout_row="7"
         android:layout_column="0" />
 
     <TextView
@@ -48,7 +61,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="A Description of the event goes here, like who is hosting, the kinds of food and drinks, and whatever other information that is pertinent to the event."
         android:id="@+id/description"
-        android:layout_row="5"
+        android:layout_row="8"
         android:layout_column="0" />
 
 </GridLayout>

@@ -79,10 +79,12 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
     }
 
     @Override
-    public void onListItemClick (ListView lv, View clicked_view, int index, long row_id){
-        Toast.makeText(context, "removing index: "+String.valueOf(index), Toast.LENGTH_SHORT).show();
-
+    public void onListItemClick (ListView lv, View clickedView, int index, long row_id){
+        //Toast.makeText(context, "removing index: "+String.valueOf(index), Toast.LENGTH_SHORT).show();
+        Log.e("f", "item clicked: "+clickedView.getId());
         if(index < eh.savedEvents.size()) {
+            //Toast.makeText(context, "opening calendar for index: "+String.valueOf(index), Toast.LENGTH_SHORT).show();
+
             CalendarHelper.openCalendarEvent(new PhotoCalEvent(eh.savedEvents.get(index)), getActivity());
             //clickRemove(index);
         }
@@ -105,10 +107,10 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
             this.context = context;
         }
 
-        public View getView(int index, View rawView, ViewGroup parent){
+        public View getView(final int index, View rawView, ViewGroup parent){
 
 
-            if(index >= eh.savedEvents.size()){
+            if(index >= eh.savedEvents.size() && eh.savedEvents.size() > 1){
                 return rawView;
             }
 
@@ -130,6 +132,16 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
 
             TextView description_tv = (TextView) rawView.findViewById(R.id.description);
             description_tv.setText((String) eh.savedEvents.get(index).get("description"));
+
+            ImageView closeButton = (ImageView) rawView.findViewById(R.id.closeButtonView);
+            closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CalendarHelper.removeFromCalendar(
+                            new PhotoCalEvent(eh.savedEvents.get(index)), getActivity());
+                    clickRemove(index);
+                }
+            });
 
             return rawView;
         }

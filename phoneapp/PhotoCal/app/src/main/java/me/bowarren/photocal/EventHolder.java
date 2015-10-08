@@ -1,6 +1,7 @@
 package me.bowarren.photocal;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +17,7 @@ import java.util.HashMap;
  */
 public class EventHolder {
     private File storage;
-    public ArrayList<HashMap> savedEvents;
+    public static ArrayList<HashMap> savedEvents;
 
 
     public EventHolder(Context context){
@@ -40,7 +41,6 @@ public class EventHolder {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(storage));
             this.savedEvents = (ArrayList<HashMap>) ois.readObject();
             ois.close();
-
             return;
         }
         catch(IOException e){
@@ -57,6 +57,7 @@ public class EventHolder {
 
     public boolean addEvent(PhotoCalEvent event){
         if(savedEvents.add(event.toDict())) {
+            Log.e("f", "writing to savedEvents");
             writeEvents();
             return true;
         }

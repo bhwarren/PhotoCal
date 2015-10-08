@@ -19,18 +19,35 @@ public class PhotoCalEvent {
     Date end;
     String location;
     String description;
-    long eventId;
+    Long eventId;
+    Long calendarID;
 
+    //make new eventId for the Event
     public PhotoCalEvent(String eventName, Date begin , Date end,
                          String location, String description, Activity activity){
+
+        this(eventName, begin, end, location, description,
+                getNewId(activity.getContentResolver()));
+
+    }
+
+    //construct object given the existing ID
+    public PhotoCalEvent(String eventName, Date begin , Date end,
+                         String location, String description, Long eventId, Long calendarID){
+        this(eventName, begin, end, location, description, eventId);
+        this.calendarID = calendarID;
+
+    }
+    //construct object given the existing ID
+    public PhotoCalEvent(String eventName, Date begin , Date end,
+                         String location, String description, Long eventId){
         this.eventName = eventName;
         this.begin = begin;
         this.end = end;
         this.location = location;
         this.description = description;
-        this.eventId = getNewId(activity.getContentResolver());
+        this.eventId = eventId;
         Log.e("f", "making new event, adding new id: " + String.valueOf(eventId));
-
 
     }
 
@@ -41,6 +58,7 @@ public class PhotoCalEvent {
         this.location = (String) event.get("location");
         this.description = (String) event.get("description");
         this.eventId = (Long) event.get("eventId");
+        this.calendarID = (Long) event.get("calendarId");
     }
 
     public HashMap toDict(){
@@ -51,6 +69,7 @@ public class PhotoCalEvent {
         thisDict.put("location", this.location);
         thisDict.put("description", this.description);
         thisDict.put("eventId", this.eventId);
+        thisDict.put("calendarId", this.calendarID);
         return thisDict;
     }
 
@@ -60,6 +79,35 @@ public class PhotoCalEvent {
         cursor.moveToFirst();
         long highestId = cursor.getLong(cursor.getColumnIndex("max_id"));
         return highestId + 1;
+    }
+
+    public String toString(){
+        return "eventName: "+eventName+"  "+
+                "begin: "+begin.toString()+"  "+
+                "end: "+end.toString()+"  "+
+                "location: "+location+"  "+
+                "description: "+description+"  "+
+                "eventId: "+String.valueOf(eventId)+"  "+
+                "calendarId: "+String.valueOf(calendarID)+"  ";
+    }
+
+    public boolean equals(PhotoCalEvent event){
+        //if ids match, return true
+        if(eventId == event.eventId)
+            return true;
+        //if one of ids is null, check by fields
+        else if(eventId == null || event.eventId == null){
+
+            return eventName.equals(event.eventName) &&
+                    begin.equals(event.begin) &&
+                    end.equals(event.end) &&
+                    location.equals(event.location) &&
+                    description.equals(event.description);
+        }
+
+        //otherwise the ids definitely don't match
+        return false;
+
     }
 
 }
