@@ -17,9 +17,9 @@ var server = app.listen(port, function () {
 	console.log('Processor listening at http://%s:%s', host, port);
 });
 
-app.get('/', function (req, res){
+app.get('/upload', function (req, res){
   res.writeHead(200, {'Content-Type': 'text/html' });
-  var form = '<form action="/upload" enctype="multipart/form-data" method="post">Add a title: <input name="title" type="text" /><br><br><input multiple="multiple" name="upload" type="file" /><br><br><input type="submit" value="Upload" /></form>';
+  var form = '<form action="/photocal" enctype="multipart/form-data" method="post">Add a title: <input name="title" type="text" /><br><br><input multiple="multiple" name="upload" type="file" /><br><br><input type="submit" value="Upload" /></form>';
   res.end(form); 
 }); 
 
@@ -49,11 +49,10 @@ app.post('/upload', function(req, res) {
 	                console.log('tesseract exited with code ' + code);
 	
 			//remove the picture file to keep space free
-			/*fs.unlink(target_path, function(err){
+			fs.unlink(target_path, function(err){
 				if(err) throw err;
 	         		console.log("successfully removed picture");
 			});
-			*/
 	
 			if(code != 0){
 				console.log("tesseract exited oddly, cancelling");
@@ -68,6 +67,8 @@ app.post('/upload', function(req, res) {
 	
 				//send the data to the entity manager
 				//var output = JSON.stringify(tag_entities(data));
+				data = data.replace(/\n+/gm, ' ');
+        			data = "'" + data.replace(/'/gm, '"') + "'";
 
 			        var json_data = JSON.stringify({
 			                "file": data,
@@ -77,7 +78,7 @@ app.post('/upload', function(req, res) {
 			
 			        // An object of options to indicate where to post to
 			        var post_options = {
-			                host: 'localhost',
+			                host: '0.0.0.0',
 			                port: '8008',
 			                path: '/ner',
 			                method: 'POST',
@@ -92,7 +93,9 @@ app.post('/upload', function(req, res) {
 			                post_res.on('data', function (response) {
 			                        console.log('Response: ' + response);
 			                        //res.write(response);
-						res.end(response);
+//						if( Object.keys(response['entities']).length === 0){ }	
+						var fields = JSON.stringify(build_fields(data,response));
+						res.end(fields);
 			                });
 			        });
 			
@@ -102,29 +105,43 @@ app.post('/upload', function(req, res) {
 
 	
 				//remove the generated ocr file
-				/*fs.unlink(text_path, function(err){
+				fs.unlink(text_path, function(err){
 	                        	if(err) throw err;
 	                        	console.log("successfully removed text file");
 	                	});
-				*/
 			});
 							
 		});
 	
-		
-		//#str="Friday, March 14, 2008 MIT’s Stata Center 32 Vassar St, Cambridge, MA 32-124 10:30am-12pm"
-		
-		//curl -H "Content-Type: application/json" -X POST -d "{\"file\":\"$str\",\"port\":\"9191\"}" http://localhost:8008/ner
-		//curl -H "Content-Type: application/json" -X POST -d {"file":"$str","port":"9191"} http://localhost:8008/ner
-	
-	
-		/*process.stdout.on('data', function (data) { });
-		process.stdin.on('endData',function (data){ })
-		process.stderr.on('data', function (data) { });
-		process.on('close', function (code) { });
-		*/
 	});
 });
+
+function build_fields(data,response){
+	var fields = {};
+	response = JSON.parse(response);
+	console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+	console.log(response['entities']);
+	console.log(response['entities']['ORGANIZATION']);
+	console.log(response.entities);
+	console.log(response.entities.ORGANIZATION);
+	if("ORGANIZATION" in response.entities){
+		fields.eventname = response.entities.ORGANIZATION[0];
+	}
+	else{
+		fields.eventname = "FFFFFFFFFFFFFFFFFFFFF";
+	}
+	if("DATE" in response.entities){
+		fields.begin = response.entities.DATE[0];
+	}
+	else{
+		fields.begin = "10/21/2015 3pm";
+	}
+	fields.end = "10/21/2015 4pm";
+	fields.location = "";
+	fields.description = "";
+	return fields; 
+
+}
 
 function tag_entities(raw_text) {
 
