@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 /**
@@ -15,15 +17,15 @@ import java.util.HashMap;
 public class PhotoCalEvent {
 
     String eventName;
-    Date begin;
-    Date end;
+    Calendar begin;
+    Calendar end;
     String location;
     String description;
     Long eventId;
     Long calendarID;
 
     //make new eventId for the Event
-    public PhotoCalEvent(String eventName, Date begin , Date end,
+    public PhotoCalEvent(String eventName, Calendar begin , Calendar end,
                          String location, String description, Activity activity){
 
         this(eventName, begin, end, location, description,
@@ -32,14 +34,14 @@ public class PhotoCalEvent {
     }
 
     //construct object given the existing ID
-    public PhotoCalEvent(String eventName, Date begin , Date end,
+    public PhotoCalEvent(String eventName, Calendar begin , Calendar end,
                          String location, String description, Long eventId, Long calendarID){
         this(eventName, begin, end, location, description, eventId);
         this.calendarID = calendarID;
 
     }
     //construct object given the existing ID
-    public PhotoCalEvent(String eventName, Date begin , Date end,
+    public PhotoCalEvent(String eventName, Calendar begin , Calendar end,
                          String location, String description, Long eventId){
         this.eventName = eventName;
         this.begin = begin;
@@ -53,8 +55,8 @@ public class PhotoCalEvent {
 
     public PhotoCalEvent(HashMap event){
         this.eventName = (String) event.get("eventName");
-        this.begin = (Date) event.get("begin");
-        this.end = (Date) event.get("end");
+        this.begin = (GregorianCalendar) event.get("begin");
+        this.end = (GregorianCalendar) event.get("end");
         this.location = (String) event.get("location");
         this.description = (String) event.get("description");
         this.eventId = (Long) event.get("eventId");

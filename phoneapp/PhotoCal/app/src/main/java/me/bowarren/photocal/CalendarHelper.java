@@ -10,19 +10,34 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.loopj.android.http.*;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by bhwarren on 10/5/15.
  */
 public class CalendarHelper {
+    private static String POST_PIC_URL = "http://www.bowarren.me/photocal";
+
+    private static AsyncHttpClient client = new AsyncHttpClient();
 
     public static Long lastEventIdAdded;
 
@@ -38,26 +53,65 @@ public class CalendarHelper {
     }
 
 
+
     //send the photo to the server and get the stuff back
-    public static PhotoCalEvent getEventInfo(File picture, Activity activity){
+    public static void uploadAndAddToCal(File picture, final Activity activity){
 
         //send photo to server
+        RequestParams params = new RequestParams();
+        try{
+            params.put("filename", picture.getAbsoluteFile());
+            params.put("Content-Disposition", "form-data");
+            params.put("name", "upload");
+            params.put("Content-Type", "image/jpeg");
+        }
+        catch (FileNotFoundException e){
+            Log.e("f","can't find file to upload");
+            return;
+        }
+        client.post(POST_PIC_URL, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // Called if the response is JSONObject
+                Log.e("F", response.toString());
 
-        //get json response
+                String eventname = "";
+                GregorianCalendar begin = new GregorianCalendar();
+                GregorianCalendar end = new GregorianCalendar();
+                String location = "";
+                String description = "";
 
-        //return new PhotoCalEvent w/ the response
-        PhotoCalEvent event = new PhotoCalEvent("title", new Date(), new Date(), "location", "description", activity);
-        return event;
+                //try getting all of the individual recognized things from the json response
+                try {eventname = response.getString("eventname");}      catch(JSONException e){}
+                try {begin.setTimeInMillis(response.getLong("begin"));} catch(JSONException e){}
+                try {end.setTimeInMillis(response.getLong("end"));}     catch(JSONException e){}
+                try {location = response.getString("location");}        catch(JSONException e){}
+                try {description = response.getString("description");}  catch(JSONException e){}
+
+
+                PhotoCalEvent event = new PhotoCalEvent(
+                        eventname,
+                        begin,
+                        end,
+                        location,
+                        description,
+                        activity
+                );
+                addToCalendar(event, activity);
+            }
+
+        });
 
     }
+
 
     //add event to the native calendar
     public static void addToCalendar(PhotoCalEvent event, Activity activity){
 
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.begin.getTime())
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.end.getTime())
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.begin.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.end.getTimeInMillis())
                 .putExtra(Events.TITLE, event.eventName)
                 .putExtra(Events.DESCRIPTION, event.description)
                 .putExtra(Events.EVENT_LOCATION, event.location)
@@ -66,8 +120,9 @@ public class CalendarHelper {
         activity.startActivityForResult(intent, 0);
         //update our event based on what was added
         lastEventIdAdded = event.eventId;
-
     }
+
+
 
     public static void openCalendarEvent(PhotoCalEvent event, Activity activity){
         Uri uri = ContentUris.withAppendedId(Events.CONTENT_URI, event.eventId);
@@ -86,6 +141,7 @@ public class CalendarHelper {
         Uri CALENDAR_URI = Uri.parse("content://com.android.calendar/events");
         Uri uri = ContentUris.withAppendedId(CALENDAR_URI, finalEvent.eventId);
 //
+
 //        if(finalEvent != null) {
 //            uri = ContentUris.withAppendedId(uri, event.calendarID);
 //        }
@@ -137,10 +193,15 @@ public class CalendarHelper {
 //                    cursor.getString(5));
 
 //            //cursor.getColumnCount()
+            Calendar begin = Calendar.getInstance();
+            begin.setTimeInMillis(Long.parseLong(cursor.getString(1)));
+            Calendar end = Calendar.getInstance();
+            end.setTimeInMillis(Long.parseLong(cursor.getString(2)));
+
             PhotoCalEvent tempEvent = new PhotoCalEvent(
                     cursor.getString(0),
-                    new Date(Long.parseLong(cursor.getString(1))),
-                    new Date(Long.parseLong(cursor.getString(2))),
+                    begin,
+                    end,
                     cursor.getString(3),
                     cursor.getString(4),
                     Long.parseLong(cursor.getString(5)),

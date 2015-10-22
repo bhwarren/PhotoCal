@@ -34,6 +34,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -122,10 +123,10 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
             eventName_tv.setText((String) eh.savedEvents.get(index).get("eventName"));
 
             TextView begin_tv = (TextView) rawView.findViewById(R.id.begin);
-            begin_tv.setText(((Date) eh.savedEvents.get(index).get("begin")).toString());
+            begin_tv.setText(((GregorianCalendar) eh.savedEvents.get(index).get("begin")).getTime().toString());
 
             TextView end_tv = (TextView) rawView.findViewById(R.id.end);
-            end_tv.setText(((Date)eh.savedEvents.get(index).get("end")).toString());
+            end_tv.setText(((GregorianCalendar)eh.savedEvents.get(index).get("end")).getTime().toString());
 
             TextView location_tv = (TextView) rawView.findViewById(R.id.location);
             location_tv.setText((String) eh.savedEvents.get(index).get("location"));

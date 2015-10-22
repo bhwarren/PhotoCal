@@ -49,9 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private CameraFragment previewFragment;
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         //possibly not needed
         //CalendarHelper.getRealInfo(232, this);
         finishedLoading = true;
+        Toast.makeText(getApplicationContext(), "Click Anywhere to take a picture", Toast.LENGTH_LONG).show();
+
 //
 //        // Set up the drawer.
 //        mNavigationDrawerFragment.setUp(
@@ -105,24 +104,15 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         //here is where you add functionality for the settings button
         FragmentManager fragmentManager = getSupportFragmentManager();
-        CameraFragment cameraFrag = (CameraFragment)fragmentManager.findFragmentByTag("Camera_Fragment");
-        if (! cameraFrag.isVisible()) {
-            // add your code here
-            fragmentManager.popBackStack();
-        }
+
+        //first thing to do if there is a fragment loaded is to unload it to show preview always
+        showPreview(null);
+
+
+        //then add the selected fragment
         switch(id){
-            // camera preview
-//            case R.id.snap_photo:
-////                fragmentManager.beginTransaction()
-////                        .replace(R.id.container, new CameraFragment(), "Camera_Fragment")
-////                        .commit();
-//                break;
             //upload picture
             case R.id.upload_picture:
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.container, PlaceholderFragment.newInstance(1))
-//                        .addToBackStack(null)
-//                        .commit();
                 selectPhotoThenUpload();
                 break;
 
@@ -170,9 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 File selectedFile = new File(picUri.getPath());
                 Log.e("f", selectedFile.toString());
 
-                PhotoCalEvent event = CalendarHelper.getEventInfo(selectedFile, this);
-                CalendarHelper.addToCalendar(event, this);
-
+                CalendarHelper.uploadAndAddToCal(selectedFile, this);
 
 //                Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
 //                intent.setDataAndType(picUri, "image/jpg");
@@ -224,17 +212,17 @@ public class MainActivity extends AppCompatActivity {
 
                     if (finalEvent != null) {
                         EventHolder eh = new EventHolder(getApplicationContext());
+                        eh.savedEvents.clear();
                         eh.addEvent(finalEvent);
                     } else {
                         //try again
-                        Toast.makeText(tempAct.getApplicationContext(), "Failed to get Info from native calendar, sticking w/ defaults", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(tempAct.getApplicationContext(), "Failed to get Info from native calendar, sticking w/ defaults", Toast.LENGTH_LONG).show();
 
                     }
                 }
             }, 1000);
 
         }
-
 
 
     }
@@ -248,5 +236,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void showPreview(MenuItem item){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        CameraFragment cameraFrag = (CameraFragment)fragmentManager.findFragmentByTag("Camera_Fragment");
+
+        if (! cameraFrag.isVisible()) {
+            fragmentManager.popBackStack();
+        }
+    }
 
 }

@@ -92,6 +92,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
         if (mCamera != null) {
             Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
             parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
             mCamera.setParameters(parameters);
         }
@@ -213,6 +214,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         // the preview.
         if(mCamera == null) return;
         Camera.Parameters parameters = mCamera.getParameters();
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
         requestLayout();
 

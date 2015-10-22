@@ -98,8 +98,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                                     out.close();
 
                                     //here's where we upload the picture & add its info the the native calendar
-                                    PhotoCalEvent ocrEvent = CalendarHelper.getEventInfo(pic, getActivity());
-                                    CalendarHelper.addToCalendar(ocrEvent, getActivity());
+                                    CalendarHelper.uploadAndAddToCal(pic, getActivity());
 
                                 }
                                 catch(FileNotFoundException e){

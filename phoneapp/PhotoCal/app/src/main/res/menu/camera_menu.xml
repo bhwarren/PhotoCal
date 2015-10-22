@@ -12,7 +12,11 @@
       limitations under the License.
      -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:icon="@drawable/ic_drawer">
+
+    
 
     <!-- Add extra items to the menu section here, like switchCamera-->
 <!--<item android:id="@+id/menu_switch_cam"-->

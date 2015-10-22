@@ -1,6 +1,7 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:icon="@drawable/ic_drawer">
 
     <!--<item-->
         <!--android:id="@+id/action_example"-->
@@ -8,11 +9,18 @@
         <!--app:showAsAction="withText|ifRoom"-->
         <!--/>-->
 
-    <item
-        android:id="@+id/snap_photo"
-        android:title="@string/title_section0"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+        <item
+            android:id="@+id/action_search"
+            android:icon="@drawable/camera"
+            android:title="Show Preview"
+            app:showAsAction="ifRoom"
+            android:onClick="showPreview"/>
+
+    <!--<item-->
+        <!--android:id="@+id/snap_photo"-->
+        <!--android:title="@string/title_section0"-->
+        <!--android:orderInCategory="100"-->
+        <!--app:showAsAction="never" />-->
     <item
         android:id="@+id/upload_picture"
         android:title="@string/title_section1"
