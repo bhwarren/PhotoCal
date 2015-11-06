@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
+    private static int fragmentId = R.id.preview;
 
       //  implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -66,10 +68,30 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
 
 
+        switch(fragmentId) {
+            //events
+            case R.id.show_events:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new EventsFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
+
+            //about
+            case R.id.about:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new AboutFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
+        }
+
+
         //possibly not needed
         //CalendarHelper.getRealInfo(232, this);
         finishedLoading = true;
-        Toast.makeText(getApplicationContext(), "Click Anywhere to take a picture", Toast.LENGTH_LONG).show();
+        if(fragmentId == R.id.preview)
+            Toast.makeText(getApplicationContext(), "Click Anywhere to take a picture", Toast.LENGTH_LONG).show();
 
 //
 //        // Set up the drawer.
@@ -99,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         //here is where you add functionality for the settings button
@@ -108,9 +129,10 @@ public class MainActivity extends AppCompatActivity {
         //first thing to do if there is a fragment loaded is to unload it to show preview always
         showPreview(null);
 
+        fragmentId = item.getItemId();
 
         //then add the selected fragment
-        switch(id){
+        switch(fragmentId){
             //upload picture
             case R.id.upload_picture:
                 selectPhotoThenUpload();
@@ -160,7 +182,9 @@ public class MainActivity extends AppCompatActivity {
                 File selectedFile = new File(picUri.getPath());
                 Log.e("f", selectedFile.toString());
 
-                CalendarHelper.uploadAndAddToCal(selectedFile, this);
+                //CalendarHelper.uploadAndAddToCal(selectedFile, this);
+                PhotoCalEvent event = new PhotoCalEvent(null, null, null, null, null, selectedFile, this);
+                CalendarHelper.addToList(event, this);
 
 //                Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
 //                intent.setDataAndType(picUri, "image/jpg");
@@ -181,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == 0) {
             Log.e("f", "adding the real event to the eventHolder w/ id: " + String.valueOf(CalendarHelper.lastEventIdAdded));
 
-
             final Activity tempAct = this;
 
             //        // Do something after 5s = 5000ms
@@ -199,8 +222,6 @@ public class MainActivity extends AppCompatActivity {
             //
             //        }
 
-
-
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -211,19 +232,23 @@ public class MainActivity extends AppCompatActivity {
                     //CalendarHelper.addToCalendar(finalEvent, this);
 
                     if (finalEvent != null) {
+                        Log.e("final event not null", finalEvent.toString());
                         EventHolder eh = new EventHolder(getApplicationContext());
-                        eh.savedEvents.clear();
+                        File pic = eh.getPic(CalendarHelper.lastIndexSelected);
+                        finalEvent.image = pic;
                         eh.addEvent(finalEvent);
+                        eh.removeEvent(CalendarHelper.lastIndexSelected);
+                        //eh.savedEvents.clear();
+
                     } else {
                         //try again
-                        //Toast.makeText(tempAct.getApplicationContext(), "Failed to get Info from native calendar, sticking w/ defaults", Toast.LENGTH_LONG).show();
+                        Toast.makeText(tempAct.getApplicationContext(), "Failed to get Info from native calendar, sticking w/ defaults", Toast.LENGTH_LONG).show();
 
                     }
                 }
             }, 1000);
 
         }
-
 
     }
 
@@ -236,13 +261,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //for some reason has to have the MenuItem there, otherwise a crash
     public void showPreview(MenuItem item){
         FragmentManager fragmentManager = getSupportFragmentManager();
         CameraFragment cameraFrag = (CameraFragment)fragmentManager.findFragmentByTag("Camera_Fragment");
 
         if (! cameraFrag.isVisible()) {
             fragmentManager.popBackStack();
+            fragmentId = R.id.preview;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0 &&
+                fragmentId != R.id.preview) {
+
+            fragmentId = R.id.preview;
+            showPreview(null);
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
 }

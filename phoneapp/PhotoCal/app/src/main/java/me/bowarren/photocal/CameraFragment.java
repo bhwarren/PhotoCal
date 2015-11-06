@@ -47,7 +47,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class CameraFragment extends android.support.v4.app.Fragment {
@@ -97,8 +99,13 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                                     out.write(data);
                                     out.close();
 
+                                    Log.e("f", "doing the adding");
                                     //here's where we upload the picture & add its info the the native calendar
-                                    CalendarHelper.uploadAndAddToCal(pic, getActivity());
+                                    //CalendarHelper.uploadAndAddToCal(pic, getActivity());
+                                    PhotoCalEvent event = new PhotoCalEvent("Not Set", null, null, "?", "?", pic, getActivity());
+                                    CalendarHelper.addToList(event, getActivity());
+                                    Log.e("f", "after the adding");
+
 
                                 }
                                 catch(FileNotFoundException e){
@@ -112,7 +119,6 @@ public class CameraFragment extends android.support.v4.app.Fragment {
 
                             }
                         });
-
                         return true;
                     };
                 }

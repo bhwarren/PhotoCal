@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -23,32 +24,35 @@ public class PhotoCalEvent {
     String description;
     Long eventId;
     Long calendarID;
+    File image;
+
 
     //make new eventId for the Event
     public PhotoCalEvent(String eventName, Calendar begin , Calendar end,
-                         String location, String description, Activity activity){
+                         String location, String description, File image, Activity activity){
 
-        this(eventName, begin, end, location, description,
+        this(eventName, begin, end, location, description, image,
                 getNewId(activity.getContentResolver()));
 
     }
 
     //construct object given the existing ID
     public PhotoCalEvent(String eventName, Calendar begin , Calendar end,
-                         String location, String description, Long eventId, Long calendarID){
-        this(eventName, begin, end, location, description, eventId);
+                         String location, String description, File image, Long eventId, Long calendarID){
+        this(eventName, begin, end, location, description, image, eventId);
         this.calendarID = calendarID;
 
     }
     //construct object given the existing ID
     public PhotoCalEvent(String eventName, Calendar begin , Calendar end,
-                         String location, String description, Long eventId){
+                         String location, String description, File image, Long eventId){
         this.eventName = eventName;
         this.begin = begin;
         this.end = end;
         this.location = location;
         this.description = description;
         this.eventId = eventId;
+        this.image = image;
         Log.e("f", "making new event, adding new id: " + String.valueOf(eventId));
 
     }
@@ -61,6 +65,7 @@ public class PhotoCalEvent {
         this.description = (String) event.get("description");
         this.eventId = (Long) event.get("eventId");
         this.calendarID = (Long) event.get("calendarId");
+        this.image = (File) event.get("image");
     }
 
     public HashMap toDict(){
@@ -72,10 +77,11 @@ public class PhotoCalEvent {
         thisDict.put("description", this.description);
         thisDict.put("eventId", this.eventId);
         thisDict.put("calendarId", this.calendarID);
+        thisDict.put("image", this.image);
         return thisDict;
     }
 
-    private static Long getNewId(ContentResolver resolver){
+    public static Long getNewId(ContentResolver resolver){
         Uri calUri = Uri.parse("content://com.android.calendar/events");
         Cursor cursor = resolver.query(calUri, new String[] {"MAX(_id) as max_id"}, null, null, "_id");
         cursor.moveToFirst();

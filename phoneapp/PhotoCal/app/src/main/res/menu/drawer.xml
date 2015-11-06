@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".drawer"
-    android:icon="@drawable/ic_drawer">
+    android:icon="@drawable/menu">
 
     <!--<item-->
         <!--android:id="@+id/action_example"-->

@@ -64,16 +64,37 @@ public class EventHolder {
         return false;
     }
 
+    public void removeEvent(int index){
+        savedEvents.remove(index);
+        writeEvents();
+    }
     public void removeEvent(HashMap event){
 
         for(int i = 0; i< savedEvents.size(); i++){
 
-            boolean isSame =
-                    event.get("eventName").equals( savedEvents.get(i).get("eventName") ) &&
-                            event.get("begin").equals(savedEvents.get(i).get("begin")) &&
-                            event.get("end").equals(savedEvents.get(i).get("end")) &&
-                            event.get("location").equals( savedEvents.get(i).get("location") ) &&
-                            event.get("description").equals( savedEvents.get(i).get("description") );
+            boolean isSame = true;
+            isSame = isSame && event.get("eventName").equals(savedEvents.get(i).get("eventName"));
+
+            //the dates need to be checked for null since the others are strings set to "?" when unknown
+            if(event.get("begin") != null && savedEvents.get(i).get("begin") != null) {
+                //check if they are functionally the same
+                isSame = isSame && event.get("begin").equals(savedEvents.get(i).get("begin"));
+            }else{
+                //check if they are both null
+                isSame = isSame && (event.get("begin") == savedEvents.get(i).get("begin") );
+            }
+
+            if(event.get("end") != null && savedEvents.get(i).get("end") != null) {
+                //check if they are functionally the same
+                isSame = isSame && event.get("end").equals(savedEvents.get(i).get("end"));
+            }else{
+                //check if they are both null
+                isSame = isSame && (event.get("end") == savedEvents.get(i).get("end") );
+            }
+
+            isSame = isSame && event.get("location").equals( savedEvents.get(i).get("location") );
+            isSame = isSame && event.get("description").equals( savedEvents.get(i).get("description") );
+            isSame = isSame && event.get("image").equals( savedEvents.get(i).get("image") );
 
             if(isSame){
                 savedEvents.remove(i);
@@ -93,5 +114,9 @@ public class EventHolder {
         catch(IOException e){
             e.printStackTrace();
         }
+    }
+
+    public File getPic(int index){
+        return((File)savedEvents.get(index).get("image"));
     }
 }

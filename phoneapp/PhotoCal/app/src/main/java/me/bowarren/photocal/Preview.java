@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class Preview extends ViewGroup implements SurfaceHolder.Callback {
+    private final int ROTATE_TO_PORTRAIT = 90;
     private final String TAG = "Preview";
 
     SurfaceView mSurfaceView;
@@ -216,8 +218,11 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
-        requestLayout();
 
+        if(h > w)
+            parameters.setRotation(ROTATE_TO_PORTRAIT);
+
+        requestLayout();
         mCamera.setParameters(parameters);
         mCamera.startPreview();
     }

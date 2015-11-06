@@ -5,7 +5,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -71,6 +75,7 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
 
     @Override
     public void onResume() {
+        adapter.notifyDataSetChanged();
         super.onResume();
     }
 
@@ -84,9 +89,16 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
         //Toast.makeText(context, "removing index: "+String.valueOf(index), Toast.LENGTH_SHORT).show();
         Log.e("f", "item clicked: "+clickedView.getId());
         if(index < eh.savedEvents.size()) {
-            //Toast.makeText(context, "opening calendar for index: "+String.valueOf(index), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "opening calendar for index: "+String.valueOf(index), Toast.LENGTH_SHORT).show();
+            PhotoCalEvent event = new PhotoCalEvent(eh.savedEvents.get(index));
 
-            CalendarHelper.openCalendarEvent(new PhotoCalEvent(eh.savedEvents.get(index)), getActivity());
+            if(! event.eventName.equals("Not Set")) //if event name is set, open up the calendar to the event
+                CalendarHelper.openCalendarEvent(event, getActivity());
+            else {
+                CalendarHelper.lastIndexSelected = index;
+                CalendarHelper.addToCalendar(event, getActivity());
+            }
+
             //clickRemove(index);
         }
     }
@@ -94,7 +106,6 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
     private void clickRemove(int index) {
         eh.removeEvent(eh.savedEvents.get(index));
         adapter.notifyDataSetChanged();
-
     }
 
 
@@ -123,10 +134,14 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
             eventName_tv.setText((String) eh.savedEvents.get(index).get("eventName"));
 
             TextView begin_tv = (TextView) rawView.findViewById(R.id.begin);
-            begin_tv.setText(((GregorianCalendar) eh.savedEvents.get(index).get("begin")).getTime().toString());
+            GregorianCalendar beginTime = (GregorianCalendar) eh.savedEvents.get(index).get("begin");
+            if(beginTime != null)
+                begin_tv.setText(beginTime.getTime().toString());
 
             TextView end_tv = (TextView) rawView.findViewById(R.id.end);
-            end_tv.setText(((GregorianCalendar)eh.savedEvents.get(index).get("end")).getTime().toString());
+            GregorianCalendar endTime = (GregorianCalendar) eh.savedEvents.get(index).get("end");
+            if(endTime != null)
+                end_tv.setText(endTime.getTime().toString());
 
             TextView location_tv = (TextView) rawView.findViewById(R.id.location);
             location_tv.setText((String) eh.savedEvents.get(index).get("location"));
@@ -144,9 +159,16 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
                 }
             });
 
+
+            ImageView preview = (ImageView) rawView.findViewById(R.id.preview);
+            String path = ((File) eh.savedEvents.get(index).get("image")).getAbsolutePath();
+            preview.setImageBitmap(BitmapFactory.decodeFile(path));
+
+
             return rawView;
         }
 
     }
 
 }
+
