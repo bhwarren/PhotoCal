@@ -93,25 +93,12 @@ public class MainActivity extends AppCompatActivity {
         if(fragmentId == R.id.preview)
             Toast.makeText(getApplicationContext(), "Click Anywhere to take a picture", Toast.LENGTH_LONG).show();
 
-//
-//        // Set up the drawer.
-//        mNavigationDrawerFragment.setUp(
-//                R.id.navigation_drawer,
-//                (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-//            // Only show items in the action bar relevant to this screen
-//            // if the drawer is not showing. Otherwise, let the drawer
-//            // decide what to show in the action bar.
-//            getMenuInflater().inflate(R.menu.drawer, menu);
-//            restoreActionBar();
-//            return true;
-//        }
         getMenuInflater().inflate(R.menu.global, menu);
         return super.onCreateOptionsMenu(menu);
     }

@@ -66,6 +66,7 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
         eh = new EventHolder(getContext());
         //eh.addEvent(new PhotoCalEvent("Test Event", new Date(), new Date(), "location", "description", getActivity()));
 
+
         adapter = new GridViewAdapter(retView.getContext(), eh.savedEvents);
         setListAdapter(adapter);
 
@@ -75,7 +76,8 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
 
     @Override
     public void onResume() {
-        adapter.notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
+
         super.onResume();
     }
 
@@ -120,7 +122,7 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
         }
 
         public View getView(final int index, View rawView, ViewGroup parent){
-
+            Log.e("getView invoked", "");
 
             if(index >= eh.savedEvents.size() && eh.savedEvents.size() > 1){
                 return rawView;
@@ -162,11 +164,30 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
 
             ImageView preview = (ImageView) rawView.findViewById(R.id.preview);
             String path = ((File) eh.savedEvents.get(index).get("image")).getAbsolutePath();
-            preview.setImageBitmap(BitmapFactory.decodeFile(path));
-
+            final String fpath = path;
+            Bitmap img = BitmapFactory.decodeFile(path+"_preview.jpg");
+            //preview.setImageBitmap(scaleImg(img, 200));
+            preview.setImageBitmap(img);
+            preview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ViewImageActivity.class);
+                    Bundle b = new Bundle();
+                    b.putString("imgPath", fpath);
+                    intent.putExtras(b); //Put your id to your next Intent
+                    startActivity(intent);
+                }
+            });
 
             return rawView;
         }
+
+//        private Bitmap scaleImg(Bitmap image, int newHeight){
+//            int height = image.getHeight();
+//            Double ratio = new Double(height) / newHeight;
+//            int newWidth = (int) (image.getWidth() / ratio);
+//            return Bitmap.createScaledBitmap(image, newWidth, newHeight, true);
+//        }
 
     }
 

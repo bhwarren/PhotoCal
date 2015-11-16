@@ -20,6 +20,7 @@ package me.bowarren.photocal;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -88,23 +89,36 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                                     directory.mkdirs();
                                 }
 
-                                File pic = new File(directory, "test.jpg");
+                                String filename = ((Long)new Date().getTime()).toString() + ".jpg";
+                                File pic = new File(directory, filename);
+                                File prev = new File(directory, filename+"_preview.jpg");
+
                                 if (pic.exists()) {
                                     pic.delete();
+                                }
+                                if (prev.exists()) {
+                                    prev.delete();
                                 }
 
                                 //try writing the picture
                                 try {
+                                    //write full image
                                     FileOutputStream out = new FileOutputStream(pic);
                                     out.write(data);
                                     out.close();
+
+                                    //write small preview
+                                    Bitmap previewImg = BitmapFactory.decodeFile(pic.getAbsolutePath());
+                                    previewImg = scaleImg(previewImg, 50);
+                                    out = new FileOutputStream(pic.getAbsolutePath()+"_preview.jpg");
+                                    previewImg.compress(Bitmap.CompressFormat.JPEG, 80, out);
 
                                     Log.e("f", "doing the adding");
                                     //here's where we upload the picture & add its info the the native calendar
                                     //CalendarHelper.uploadAndAddToCal(pic, getActivity());
                                     PhotoCalEvent event = new PhotoCalEvent("Not Set", null, null, "?", "?", pic, getActivity());
                                     CalendarHelper.addToList(event, getActivity());
-                                    Log.e("f", "after the adding");
+                                   Log.e("f", "after the adding");
 
 
                                 }
@@ -122,7 +136,9 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                         return true;
                     };
                 }
+
         );
+
 
         // Find the total number of cameras available
         mNumberOfCameras = Camera.getNumberOfCameras();
@@ -135,7 +151,16 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                 mCurrentCamera = mDefaultCameraId = i;
             }
         }
+
         setHasOptionsMenu(mNumberOfCameras > 1);
+    }
+
+
+    private Bitmap scaleImg(Bitmap image, int newHeight){
+        int height = image.getHeight();
+        Double ratio = new Double(height) / newHeight;
+        int newWidth = (int) (image.getWidth() / ratio);
+        return Bitmap.createScaledBitmap(image, newWidth, newHeight, true);
     }
 
     @Override

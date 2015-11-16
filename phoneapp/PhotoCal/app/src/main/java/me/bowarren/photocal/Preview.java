@@ -120,7 +120,6 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                     previewHeight = mPreviewSize.height;
                 }
 
-
             }
             if(height>width && mCamera != null) {
                 mCamera.setDisplayOrientation(90);
@@ -152,7 +151,9 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         } catch (IOException exception) {
             Log.e(TAG, "IOException caused by setPreviewDisplay()", exception);
         }
-        if (mPreviewSize == null) requestLayout();
+        if (mPreviewSize == null)
+            requestLayout();
+
         mSurfaceCreated = true;
     }
 
@@ -207,24 +208,60 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
                 }
             }
         }
-        return optimalSize;
 
+        return optimalSize;
+    }
+
+
+    private Size getOptimalPictureSize(Camera cam) {
+        List<Size> sizes = cam.getParameters().getSupportedPreviewSizes();
+
+        if (sizes == null)
+            return null;
+
+        Size optimalSize = null;
+        double minDiff = Double.MAX_VALUE;
+
+        optimalSize = sizes.get(0);
+        // find biggest size for saving
+        for (Size size : sizes) {
+            if(size.height*size.width > optimalSize.height*optimalSize.width){
+                optimalSize = size;
+            }
+        }
+
+        return optimalSize;
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         // Now that the size is known, set up the camera parameters and begin
         // the preview.
-        if(mCamera == null) return;
+        if(mCamera == null)
+            return;
+
+        Size pic_size = getOptimalPictureSize(mCamera);
+
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
+        parameters.setPictureSize(pic_size.width, pic_size.height);
 
-        if(h > w)
+        if(h > w) {
             parameters.setRotation(ROTATE_TO_PORTRAIT);
+            //parameters.setPictureSize(mPreviewSize.width, mPreviewSize.height);
+
+
+        }
+        Log.e("Optimal Size", mPreviewSize.width+" "+mPreviewSize.height);
+
 
         requestLayout();
         mCamera.setParameters(parameters);
         mCamera.startPreview();
+    }
+
+    public Size getSize(){
+        return mPreviewSize;
     }
 
 
