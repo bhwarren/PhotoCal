@@ -39,6 +39,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private static int fragmentId = R.id.preview;
+    private MenuItem previewButton;
 
       //  implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -86,12 +87,17 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
+        if(fragmentId == R.id.preview && previewButton != null){
+            previewButton.setVisible(false);
+        }
+
 
         //possibly not needed
         //CalendarHelper.getRealInfo(232, this);
         finishedLoading = true;
-        if(fragmentId == R.id.preview)
+        if(fragmentId == R.id.preview) {
             Toast.makeText(getApplicationContext(), "Click Anywhere to take a picture", Toast.LENGTH_LONG).show();
+        }
 
     }
 
@@ -100,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.global, menu);
+        previewButton = menu.findItem(R.id.action_preview);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -145,6 +152,10 @@ public class MainActivity extends AppCompatActivity {
                         .addToBackStack(null)
                         .commit();
                 break;
+        }
+
+        if(fragmentId == R.id.preview) {
+            previewButton.setVisible(false);
         }
 
         return super.onOptionsItemSelected(item);
@@ -248,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //for some reason has to have the MenuItem there, otherwise a crash
+    //has to have the MenuItem there, otherwise a crash b/c it's onclick is defined in xml
     public void showPreview(MenuItem item){
         FragmentManager fragmentManager = getSupportFragmentManager();
         CameraFragment cameraFrag = (CameraFragment)fragmentManager.findFragmentByTag("Camera_Fragment");
@@ -256,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
         if (! cameraFrag.isVisible()) {
             fragmentManager.popBackStack();
             fragmentId = R.id.preview;
+            previewButton.setVisible(false);
         }
     }
 

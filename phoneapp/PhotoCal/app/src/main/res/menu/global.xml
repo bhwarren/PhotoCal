@@ -10,11 +10,11 @@
         <!--/>-->
 
         <item
-            android:id="@+id/action_search"
+            android:id="@+id/action_preview"
             android:icon="@drawable/camera"
             android:title="Show Preview"
             app:showAsAction="ifRoom"
-            android:onClick="showPreview"/>
+            android:onClick="showPreview" />
 
     <!--<item-->
         <!--android:id="@+id/snap_photo"-->

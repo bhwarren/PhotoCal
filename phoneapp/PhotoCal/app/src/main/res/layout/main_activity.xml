@@ -10,20 +10,23 @@
 
     <!-- As the main content view, the view below consumes the entire
          space available using match_parent in both dimensions. -->
-    <RelativeLayout
+    <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/myFAB"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:src="@drawable/camera" />-->
+        <android.support.design.widget.FloatingActionButton
+        android:id="@+id/myFAB"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/camera"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="30dp"
+            android:layout_marginRight="20dp" />
 
-    </RelativeLayout>
+    </FrameLayout>
 
     <!-- android:layout_gravity="start" tells DrawerLayout to treat
          this as a sliding drawer on the left side for left-to-right

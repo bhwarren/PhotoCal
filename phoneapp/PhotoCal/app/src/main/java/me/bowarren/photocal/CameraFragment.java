@@ -221,6 +221,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
         } else {
             super.onCreateOptionsMenu(menu, inflater);
         }
+
     }
 
 //    @Override
