@@ -142,6 +142,8 @@ public class CameraFragment extends android.support.v4.app.Fragment {
         mCamera = Camera.open(mCurrentCamera);
         mCameraCurrentlyLocked = mCurrentCamera;
         mPreview.setCamera(mCamera);
+        //((MainActivity)getActivity()).showPreview(null);
+
     }
 
 
@@ -173,6 +175,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
     }
 
     public void takePicture(){
+        //Boolean done;
         mCamera.takePicture(null, null, new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
@@ -203,7 +206,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
 
                     //write small preview
                     Bitmap previewImg = BitmapFactory.decodeFile(pic.getAbsolutePath());
-                    previewImg = scaleImg(previewImg, 150);
+                    previewImg = scaleImg(previewImg, 250);
                     out = new FileOutputStream(pic.getAbsolutePath()+"_preview.jpg");
                     previewImg.compress(Bitmap.CompressFormat.JPEG, 80, out);
 
@@ -215,6 +218,8 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                     Log.e("f", "after the adding");
 
 
+                    ((MainActivity)getActivity()).showEvents();
+
                 }
                 catch(FileNotFoundException e){
                     Toast.makeText(getContext(), "failed to find file", Toast.LENGTH_SHORT).show();
@@ -224,10 +229,12 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                     Toast.makeText(getContext(), "Io exception", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
-
             }
         });
+
+
     }
+
 
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {

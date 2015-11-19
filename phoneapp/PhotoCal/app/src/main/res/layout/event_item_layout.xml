@@ -73,7 +73,7 @@
         android:id="@+id/preview"
         android:paddingRight="20px"
         android:scaleType="centerCrop"
-        android:layout_gravity="fill_vertical" />
+        android:layout_gravity="center" />
 
     <ImageView
         android:layout_width="30dp"

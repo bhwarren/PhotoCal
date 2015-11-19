@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //take picture
+                Toast.makeText(getApplicationContext(), "Saving Picture", Toast.LENGTH_SHORT).show();
                 previewFragment.takePicture();
             }
         });
@@ -98,13 +100,14 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-
         //possibly not needed
         //CalendarHelper.getRealInfo(232, this);
         finishedLoading = true;
-        if(fragmentId == R.id.preview) {
-            Toast.makeText(getApplicationContext(), "Click Anywhere to take a picture", Toast.LENGTH_LONG).show();
-        }
+
+//        if(fragmentId == R.id.preview)
+//            switchIconsToPreview(true);
+//        else
+//            switchIconsToPreview(false);
 
     }
 
@@ -114,8 +117,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.global, menu);
         previewButton = menu.findItem(R.id.action_preview);
-        previewButton.setVisible(false);
+        if(fragmentId == R.id.preview)
+            previewButton.setVisible(false);
         return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
@@ -128,12 +133,11 @@ public class MainActivity extends AppCompatActivity {
         //here is where you add functionality for the settings button
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        fab.setVisibility(View.INVISIBLE);
-        previewButton.setVisible(true);
-
-
         //first thing to do if there is a fragment loaded is to unload it to show preview always
-        showPreview(null);
+        //showPreview(null);
+        fragmentManager.popBackStack();
+        switchIconsToPreview(false);
+
 
         fragmentId = item.getItemId();
 
@@ -146,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
             //open calendar
             case R.id.open_calendar:
+                switchIconsToPreview(true); //when coming back, always goes to preview for some reason
                 CalendarHelper.openCalendar(this);
                 break;
 
@@ -166,13 +171,14 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("f", "got activity result: " + String.valueOf(requestCode)+"   result code: "+String.valueOf(resultCode));
+        Log.e("f", "got activity result: " + String.valueOf(requestCode) + "   result code: " + String.valueOf(resultCode));
 
 
         //finished letting user edit the event
@@ -246,6 +252,13 @@ public class MainActivity extends AppCompatActivity {
                         eh.removeEvent(CalendarHelper.lastIndexSelected);
                         //eh.savedEvents.clear();
 
+                        showPreview(null);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.container, new EventsFragment())
+                                .addToBackStack(null)
+                                .commit();
+                        switchIconsToPreview(false);
+
                     } else {
                         //try again
                         Toast.makeText(tempAct.getApplicationContext(), "Failed to get Info from native calendar, sticking w/ defaults", Toast.LENGTH_LONG).show();
@@ -274,11 +287,26 @@ public class MainActivity extends AppCompatActivity {
 
         if (! cameraFrag.isVisible()) {
             fragmentManager.popBackStack();
-            fragmentId = R.id.preview;
-            previewButton.setVisible(false);
-            fab.setVisibility(View.VISIBLE);
-
         }
+        fragmentId = R.id.preview;
+        switchIconsToPreview(true);
+
+    }
+
+    public void showEvents(){
+        //showPreview(null);
+        getSupportFragmentManager().popBackStack();
+        //switchIconsToPreview(false); //needed to remove icons for events fragment
+
+        fragmentId = R.id.show_events;
+        switchIconsToPreview(false);
+
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, new EventsFragment())
+                .addToBackStack(null)
+                .commit();
+
     }
 
     @Override
@@ -286,12 +314,34 @@ public class MainActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0 &&
                 fragmentId != R.id.preview) {
 
-            fragmentId = R.id.preview;
             showPreview(null);
+            switchIconsToPreview(true);
             return true;
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+
+    public void switchIconsToPreview(boolean truth){
+        //preview icons
+        if(truth){
+            if(previewButton != null)
+                previewButton.setVisible(false);
+            if(fab != null)
+                fab.setVisibility(View.VISIBLE);
+        }
+
+
+        //everything else icons
+        else{
+            if(previewButton != null)
+                previewButton.setVisible(true);
+            if(fab != null)
+                fab.setVisibility(View.INVISIBLE);
+
+
+        }
     }
 
 }

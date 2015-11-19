@@ -12,7 +12,9 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,17 +68,18 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
         eh = new EventHolder(getContext());
         //eh.addEvent(new PhotoCalEvent("Test Event", new Date(), new Date(), "location", "description", getActivity()));
 
-
         adapter = new GridViewAdapter(retView.getContext(), eh.savedEvents);
         setListAdapter(adapter);
 
         return retView;
     }
 
-
     @Override
     public void onResume() {
         //adapter.notifyDataSetChanged();
+//        if((FloatingActionButton) this.getView().findViewById(R.id.myFAB) != null)
+//            ((FloatingActionButton) this.getView().findViewById(R.id.myFAB)).setVisibility(View.INVISIBLE);
+        ((MainActivity) getActivity()).switchIconsToPreview(false);
 
         super.onResume();
     }
@@ -132,6 +135,14 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
                     context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             rawView = inflater.inflate(R.layout.event_item_layout, parent, false);
 
+            GridLayout textHolder = (GridLayout) rawView.findViewById(R.id.event_item_layout);
+            GridLayout.LayoutParams textParams = (GridLayout.LayoutParams) textHolder.getLayoutParams();
+            DisplayMetrics metrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            textParams.width = metrics.widthPixels * 3/5;
+            textHolder.setLayoutParams(textParams);
+
+
             TextView eventName_tv = (TextView) rawView.findViewById(R.id.eventName);
             eventName_tv.setText((String) eh.savedEvents.get(index).get("eventName"));
 
@@ -151,6 +162,7 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
             TextView description_tv = (TextView) rawView.findViewById(R.id.description);
             description_tv.setText((String) eh.savedEvents.get(index).get("description"));
 
+            //close button
             ImageView closeButton = (ImageView) rawView.findViewById(R.id.closeButtonView);
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -161,7 +173,7 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
                 }
             });
 
-
+            //preview image
             ImageView preview = (ImageView) rawView.findViewById(R.id.preview);
             String path = ((File) eh.savedEvents.get(index).get("image")).getAbsolutePath();
             final String fpath = path;
@@ -178,6 +190,8 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
                     startActivity(intent);
                 }
             });
+            int freeWidth = ((GridLayout) rawView.findViewById(R.id.larger_event_item_layout)).getWidth() - (metrics.widthPixels*3/5 + closeButton.getWidth());
+            preview.setMaxWidth(freeWidth);
 
             return rawView;
         }

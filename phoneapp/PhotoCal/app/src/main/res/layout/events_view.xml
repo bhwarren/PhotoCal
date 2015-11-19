@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Events go here"
+        android:text="Events"
         android:id="@+id/textView3"
         android:layout_gravity="center_horizontal" />
 
