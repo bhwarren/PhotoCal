@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.CalendarContract;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
     private static int fragmentId = R.id.preview;
     private MenuItem previewButton;
+    private FloatingActionButton fab;
 
       //  implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -57,11 +59,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+
 //        mNavigationDrawerFragment = (NavigationDrawerFragment)
 //                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         previewFragment = new CameraFragment();
+
+        fab = (FloatingActionButton) this.findViewById(R.id.myFAB);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                previewFragment.takePicture();
+            }
+        });
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -87,10 +98,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        if(fragmentId == R.id.preview && previewButton != null){
-            previewButton.setVisible(false);
-        }
-
 
         //possibly not needed
         //CalendarHelper.getRealInfo(232, this);
@@ -107,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.global, menu);
         previewButton = menu.findItem(R.id.action_preview);
+        previewButton.setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -119,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         //here is where you add functionality for the settings button
         FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fab.setVisibility(View.INVISIBLE);
+        previewButton.setVisible(true);
+
 
         //first thing to do if there is a fragment loaded is to unload it to show preview always
         showPreview(null);
@@ -152,10 +164,6 @@ public class MainActivity extends AppCompatActivity {
                         .addToBackStack(null)
                         .commit();
                 break;
-        }
-
-        if(fragmentId == R.id.preview) {
-            previewButton.setVisible(false);
         }
 
         return super.onOptionsItemSelected(item);
@@ -268,6 +276,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.popBackStack();
             fragmentId = R.id.preview;
             previewButton.setVisible(false);
+            fab.setVisibility(View.VISIBLE);
+
         }
     }
 

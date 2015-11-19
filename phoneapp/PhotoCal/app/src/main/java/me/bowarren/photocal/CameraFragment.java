@@ -24,22 +24,22 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.hardware.Camera;
-        import android.hardware.Camera.CameraInfo;
-        import android.hardware.Camera.Size;
-        import android.os.Bundle;
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.Menu;
-        import android.view.MenuInflater;
-        import android.view.MenuItem;
+import android.content.Context;
+import android.content.Intent;
+import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
+import android.hardware.Camera.Size;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-        import android.view.SurfaceView;
-        import android.view.View;
-        import android.view.ViewGroup;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
@@ -67,77 +67,25 @@ public class CameraFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         // Create a container that will hold a SurfaceView for camera previews
         mPreview = new Preview(this.getActivity());
-        mPreview.setOnTouchListener( new OnTouchListener(){
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event){
-                        if(event.getAction() != MotionEvent.ACTION_DOWN){
-                            //Log.e("F","FfFFFFFFFFFFFFFF");
-                            return false;
-                        }
-
-                        mCamera.takePicture(null, null, new Camera.PictureCallback() {
-                            @Override
-                            public void onPictureTaken(byte[] data, Camera camera) {
-                                //make directory and save the picture
-                                File directory = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/PhotoCal");
-
-                                if (!directory.exists()) {
-                                    directory.mkdirs();
-                                }
-
-                                String filename = ((Long)new Date().getTime()).toString() + ".jpg";
-                                File pic = new File(directory, filename);
-                                File prev = new File(directory, filename+"_preview.jpg");
-
-                                if (pic.exists()) {
-                                    pic.delete();
-                                }
-                                if (prev.exists()) {
-                                    prev.delete();
-                                }
-
-                                //try writing the picture
-                                try {
-                                    //write full image
-                                    FileOutputStream out = new FileOutputStream(pic);
-                                    out.write(data);
-                                    out.close();
-
-                                    //write small preview
-                                    Bitmap previewImg = BitmapFactory.decodeFile(pic.getAbsolutePath());
-                                    previewImg = scaleImg(previewImg, 50);
-                                    out = new FileOutputStream(pic.getAbsolutePath()+"_preview.jpg");
-                                    previewImg.compress(Bitmap.CompressFormat.JPEG, 80, out);
-
-                                    Log.e("f", "doing the adding");
-                                    //here's where we upload the picture & add its info the the native calendar
-                                    //CalendarHelper.uploadAndAddToCal(pic, getActivity());
-                                    PhotoCalEvent event = new PhotoCalEvent("Not Set", null, null, "?", "?", pic, getActivity());
-                                    CalendarHelper.addToList(event, getActivity());
-                                   Log.e("f", "after the adding");
-
-
-                                }
-                                catch(FileNotFoundException e){
-                                    Toast.makeText(getContext(), "failed to find file", Toast.LENGTH_SHORT).show();
-                                    e.printStackTrace();
-                                }
-                                catch(IOException e){
-                                    Toast.makeText(getContext(), "Io exception", Toast.LENGTH_SHORT).show();
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        });
-                        return true;
-                    };
-                }
-
-        );
+//        mPreview.setOnTouchListener( new OnTouchListener(){
+//                    @Override
+//                    public boolean onTouch(View v, MotionEvent event){
+//                        if(event.getAction() != MotionEvent.ACTION_DOWN){
+//                            //Log.e("F","FfFFFFFFFFFFFFFF");
+//                            return false;
+//                        }
+//
+//
+//                        return true;
+//                    };
+//                }
+//
+//        );
 
 
         // Find the total number of cameras available
@@ -222,6 +170,63 @@ public class CameraFragment extends android.support.v4.app.Fragment {
             super.onCreateOptionsMenu(menu, inflater);
         }
 
+    }
+
+    public void takePicture(){
+        mCamera.takePicture(null, null, new Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] data, Camera camera) {
+                //make directory and save the picture
+                File directory = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/PhotoCal");
+
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                String filename = ((Long)new Date().getTime()).toString() + ".jpg";
+                File pic = new File(directory, filename);
+                File prev = new File(directory, filename+"_preview.jpg");
+
+                if (pic.exists()) {
+                    pic.delete();
+                }
+                if (prev.exists()) {
+                    prev.delete();
+                }
+
+                //try writing the picture
+                try {
+                    //write full image
+                    FileOutputStream out = new FileOutputStream(pic);
+                    out.write(data);
+                    out.close();
+
+                    //write small preview
+                    Bitmap previewImg = BitmapFactory.decodeFile(pic.getAbsolutePath());
+                    previewImg = scaleImg(previewImg, 150);
+                    out = new FileOutputStream(pic.getAbsolutePath()+"_preview.jpg");
+                    previewImg.compress(Bitmap.CompressFormat.JPEG, 80, out);
+
+                    Log.e("f", "doing the adding");
+                    //here's where we upload the picture & add its info the the native calendar
+                    //CalendarHelper.uploadAndAddToCal(pic, getActivity());
+                    PhotoCalEvent event = new PhotoCalEvent("Not Set", null, null, "?", "?", pic, getActivity());
+                    CalendarHelper.addToList(event, getActivity());
+                    Log.e("f", "after the adding");
+
+
+                }
+                catch(FileNotFoundException e){
+                    Toast.makeText(getContext(), "failed to find file", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+                catch(IOException e){
+                    Toast.makeText(getContext(), "Io exception", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
 //    @Override
