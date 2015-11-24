@@ -104,10 +104,12 @@ public class CameraFragment extends android.support.v4.app.Fragment {
     }
 
 
-    private Bitmap scaleImg(Bitmap image, int newHeight){
+    public Bitmap scaleImg(Bitmap image, int newHeight){
         int height = image.getHeight();
         Double ratio = new Double(height) / newHeight;
         int newWidth = (int) (image.getWidth() / ratio);
+        newWidth = ( newWidth > newHeight*9/16 ) ? newHeight*9/16 : newWidth;
+
         return Bitmap.createScaledBitmap(image, newWidth, newHeight, true);
     }
 
@@ -130,8 +132,6 @@ public class CameraFragment extends android.support.v4.app.Fragment {
         return mPreview;
     }
 
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -139,11 +139,25 @@ public class CameraFragment extends android.support.v4.app.Fragment {
         // Use mCurrentCamera to select the camera desired to safely restore
         // the fragment after the camera has been changed
         //Log.e("F", "resumed, getting camera back");
-        mCamera = Camera.open(mCurrentCamera);
-        mCameraCurrentlyLocked = mCurrentCamera;
-        mPreview.setCamera(mCamera);
-        //((MainActivity)getActivity()).showPreview(null);
 
+        try {
+            mCamera = Camera.open(mCurrentCamera);
+            mCameraCurrentlyLocked = mCurrentCamera;
+            mPreview.setCamera(mCamera);
+        }
+        catch(RuntimeException e){
+            //can't connect to camera, continue
+            Log.e("CameraConnection", "can't connect to camera. This is ok b/c it's trying to connect twice");
+
+        }
+
+
+        boolean prevVisible = ((CameraFragment)((MainActivity)getActivity()).getSupportFragmentManager().findFragmentByTag("Camera_Fragment").getFragmentManager().findFragmentByTag("Camera_Fragment")).isVisible();
+        if(prevVisible) {
+            ((MainActivity) getActivity()).switchIconsToPreview(true);
+        }
+
+        //((MainActivity)getActivity()).showPreview(null);
     }
 
 

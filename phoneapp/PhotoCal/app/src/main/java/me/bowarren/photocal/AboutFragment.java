@@ -28,6 +28,7 @@ public class AboutFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onResume() {
+        ((MainActivity) getActivity()).switchIconsToPreview(false);
         super.onResume();
     }
 

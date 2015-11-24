@@ -81,6 +81,27 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
 //            ((FloatingActionButton) this.getView().findViewById(R.id.myFAB)).setVisibility(View.INVISIBLE);
         ((MainActivity) getActivity()).switchIconsToPreview(false);
 
+        //update all the events for when edited an event
+        ArrayList<HashMap> replaceEvents = new ArrayList<HashMap>();
+        while(eh.savedEvents.size() > 0){
+            PhotoCalEvent temp = new PhotoCalEvent(eh.savedEvents.remove(0));
+            PhotoCalEvent tempRepl = CalendarHelper.getRealInfo(temp.eventId, this.getActivity());
+            if(tempRepl != null) {
+                tempRepl.image = temp.image;
+                replaceEvents.add(tempRepl.toDict());
+            }
+            else{
+                replaceEvents.add(temp.toDict());
+            }
+        }
+        eh.savedEvents = replaceEvents;
+
+        adapter = new GridViewAdapter(getContext(), eh.savedEvents);
+        setListAdapter(adapter);
+        Log.e("f", eh.savedEvents.size()+"XXXXXXXX");
+
+
+
         super.onResume();
     }
 
@@ -167,8 +188,9 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CalendarHelper.removeFromCalendar(
-                            new PhotoCalEvent(eh.savedEvents.get(index)), getActivity());
+                    PhotoCalEvent eventToDel = new PhotoCalEvent(eh.savedEvents.get(index));
+                    CalendarHelper.removeFromCalendar(eventToDel, getActivity());
+                    eventToDel.image.delete();
                     clickRemove(index);
                 }
             });
@@ -190,7 +212,10 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
                     startActivity(intent);
                 }
             });
-            int freeWidth = ((GridLayout) rawView.findViewById(R.id.larger_event_item_layout)).getWidth() - (metrics.widthPixels*3/5 + closeButton.getWidth());
+            //int freeWidth = ((GridLayout) rawView.findViewById(R.id.larger_event_item_layout)).getWidth() - (textParams.width + closeButton.getWidth());
+            int freeWidth = (metrics.widthPixels - (textParams.width + metrics.widthPixels/4)); //the 1/6 is for teh close button
+
+            Log.e("size of preview", "Free width: " + freeWidth + " text width: " + textParams.width + " total width: " + ((GridLayout) rawView.findViewById(R.id.larger_event_item_layout)).getWidth());
             preview.setMaxWidth(freeWidth);
 
             return rawView;

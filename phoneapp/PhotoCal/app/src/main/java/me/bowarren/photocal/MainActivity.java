@@ -2,8 +2,11 @@ package me.bowarren.photocal;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.net.Uri;
@@ -33,10 +36,14 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     private static int fragmentId = R.id.preview;
@@ -189,19 +196,52 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == 1 && resultCode == RESULT_OK){
             Log.e("e", "got selected picture from user");
 
+
             if(data != null){
                 Uri picUri = data.getData();
-                File selectedFile = new File(picUri.getPath());
-                Log.e("f", selectedFile.toString());
+                File selectedFile;
+                File directory;
+                File dest;
+                File prev;
 
-                //CalendarHelper.uploadAndAddToCal(selectedFile, this);
-                PhotoCalEvent event = new PhotoCalEvent(null, null, null, null, null, selectedFile, this);
-                CalendarHelper.addToList(event, this);
+
+                try{
+                    InputStream selectedInput = getContentResolver().openInputStream(picUri);
+                    selectedFile = new File(picUri.getPath());
+
+                     directory = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/PhotoCal");
+                     dest = new File(directory.getAbsolutePath() + "/"+selectedFile.getName());
+                     prev = new File(dest.getPath()+"_preview.jpg");
+
+                    FileOutputStream destOut = new FileOutputStream(dest);
+                    IOUtils.copy(selectedInput, destOut);
+
+
+                    //FileUtils.copyFile(selectedFile, dest);
+
+                    FileOutputStream out = new FileOutputStream(prev);
+                    Bitmap preview = previewFragment.scaleImg(BitmapFactory.decodeFile(dest.getAbsolutePath()), 250);
+                    preview.compress(Bitmap.CompressFormat.JPEG, 80, out);
+                    Log.e("f", selectedFile.toString());
+
+                    //CalendarHelper.uploadAndAddToCal(selectedFile, this);
+                    PhotoCalEvent event = new PhotoCalEvent("Not Set", null, null, "?", "?", dest, this);
+                    CalendarHelper.addToList(event, this);
+
+                    showEvents();
+
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+
+
+
 
 //                Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
 //                intent.setDataAndType(picUri, "image/jpg");
 //                startActivity(intent);
-
             }
             return;
         }
@@ -214,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        //adding the event after recieved
         if(requestCode == 0) {
             Log.e("f", "adding the real event to the eventHolder w/ id: " + String.valueOf(CalendarHelper.lastEventIdAdded));
 

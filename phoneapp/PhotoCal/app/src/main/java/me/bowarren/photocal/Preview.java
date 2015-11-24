@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Size;
@@ -45,6 +46,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
     Preview(Context context) {
         super(context);
+
 
         mSurfaceView = new SurfaceView(context);
         addView(mSurfaceView);
@@ -86,6 +88,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
         if(height>width){
             portrait = true;
         }
+
 
         if (mSupportedPreviewSizes != null) {
             //detect orientation

@@ -166,6 +166,8 @@ public class CalendarHelper {
         Uri uri = ContentUris.withAppendedId(CALENDAR_URI, finalEvent.eventId);
 
         int rowsDeleted = activity.getContentResolver().delete(uri, null, null);
+        Log.e("deleted # rows: ",""+rowsDeleted);
+
         //Toast.makeText(activity.getApplicationContext(), "removing this many rows: "+String.valueOf(rowsDeleted), Toast.LENGTH_SHORT).show();
         //Toast.makeText(activity.getApplicationContext(), "removing: "+finalEvent.toString(), Toast.LENGTH_SHORT).show();
 
