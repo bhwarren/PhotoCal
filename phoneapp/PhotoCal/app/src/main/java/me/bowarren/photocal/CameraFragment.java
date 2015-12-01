@@ -135,15 +135,18 @@ public class CameraFragment extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("f", "resumed");
+        Log.e("f", "resumed w/ camera: "+mCurrentCamera);
         // Use mCurrentCamera to select the camera desired to safely restore
         // the fragment after the camera has been changed
         //Log.e("F", "resumed, getting camera back");
 
+
         try {
             mCamera = Camera.open(mCurrentCamera);
             mCameraCurrentlyLocked = mCurrentCamera;
+            //mPreview = new Preview(this.getActivity());
             mPreview.setCamera(mCamera);
+            this.getView().invalidate();
         }
         catch(RuntimeException e){
             //can't connect to camera, continue

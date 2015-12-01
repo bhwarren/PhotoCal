@@ -144,6 +144,7 @@ public class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
 
     public void surfaceCreated(SurfaceHolder holder) {
+
         //Log.e("f", "surface created");
         // The Surface has been created, acquire the camera and tell it where
         // to draw.

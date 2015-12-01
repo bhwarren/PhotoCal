@@ -81,6 +81,13 @@ public class EventsFragment extends android.support.v4.app.ListFragment{
 //            ((FloatingActionButton) this.getView().findViewById(R.id.myFAB)).setVisibility(View.INVISIBLE);
         ((MainActivity) getActivity()).switchIconsToPreview(false);
 
+        try {
+            Thread.sleep(2000);
+
+        }
+        catch(InterruptedException e){
+            e.printStackTrace();
+        }
         //update all the events for when edited an event
         ArrayList<HashMap> replaceEvents = new ArrayList<HashMap>();
         while(eh.savedEvents.size() > 0){
